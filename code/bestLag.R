@@ -1,12 +1,18 @@
 # Function for calculating best fit lag between adult and larval phenology
 
-bestLag = function(speciesID,             # species identifier
-                   IDtype = 'code',       # possible values are 'code' (4-letter butterfly code), 'common_name', or 'scientific_name'
+# Need to allow for either abundance (e.g. MA Butterfly Survey) or occurrence (e.g. iNaturalist) data for adults,
+# which will determine whether a GAM or kernel density estimator is fit to the data, respectively.
+
+# For caterpillars, also need to allow for abundance (e.g. Hubbard Brook, Coweeta, Caterpillars Count!) or occurrence
+# (e.g. iNaturalist) data, but in either case, kernel density estimator will be used.
+
+bestLag = function(sci_name,              # scientific name
                    year,                  # year of comparison
                    doy.scope = c(1, 366), # day of year scope for estimating phenology
                    larvaDF,               # dataframe of larval occurrences with columns: (code, common_name, or scientific_name), year, doy, count
                    adultDF,               # dataframe of adult occurrences with columns: (code, common_name, or scientific_name), year, doy, count
-                   minNumLarvalRecs = 3   # minimum number of larval records
+                   minNumLarvalRecs = 3,  # minimum number of larval records
+                   lagRange = -60:60,     # vector of lags to evaluate
                    ) {
   
   
@@ -17,7 +23,7 @@ bestLag = function(speciesID,             # species identifier
     mutate(CT = ifelse(get(IDtype) == speciesID, count, 0)) %>%
     group_by(SITE_ID, doy) %>%
     arrange(doy) %>%
-    summarize(Species = spi, Count = sum(CT))
+    summarize(Species = speciesID, Count = sum(CT))
   
   adult.spi.phen <- flightcurve(adult.spi)
   
