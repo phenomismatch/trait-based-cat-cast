@@ -417,3 +417,92 @@ pheno_bootstrap<-function(mydata, indices) {
   }
 
 ##end bootstrapped phenometrics
+
+
+
+
+
+
+lagFits = function(sci_name,              # scientific name
+                   Year,                  # year of comparison
+                   doy.scope = 1:366,     # day of year scope for estimating phenology
+                   larvaDF,               # dataframe of larval occurrences with columns: scientific_name, year, DATE, count
+                   adultDF,               # dataframe of adult occurrences with columns: scientific_name, year, DATE, count,
+                   # and optionally a SITE_ID field (as in MA Butterfly data)
+                   minNumRecs = 5,        # minimum number of larval or adult records
+                   lagRange = -60:60,     # vector of lags to evaluate
+                   multipleSites = FALSE, # are adult count data from multiple sites over which phenology is to be estimated? 
+                   # If TRUE, then expects SITE_ID field in adultDF which is used in hierarchical model
+                   bestFitOnly = FALSE    # If TRUE, only return lag with the highest R2, otherwise return R2's of all lags
+) {
+  
+  # If the data do not span multiple sites, create a constant column, SITE_ID = 1
+  if (!multipleSites) {
+    adultDF$SITE_ID = 1
+  }
+  
+  if (!'SITE_ID' %in% names(adultDF)) {
+    warning("The dataframe 'adultDF' must have a SITE_ID field if multipleSites = TRUE.")
+    return(NULL)
+  }
+  
+  # Calculate adult counts by day
+  #   (Need to use specific columns in ALL CAPS for the flight_curve function)
+  
+  adult.spi <- adultDF %>%
+    filter(year == Year) %>%
+    mutate(CT = ifelse(scientific_name == sci_name, count, 0)) %>%
+    group_by(SITE_ID, DATE) %>%
+    arrange(DATE) %>%
+    summarize(SPECIES = sci_name, COUNT = sum(CT))
+  
+  # Check that there are enough adult records (i.e. dates with count > 0)
+  if (sum(adult.spi$COUNT > 0) >= minNumRecs) {
+    
+    adult.spi.phen <- flightcurve(adult.spi)
+    temp.ad <- data.frame(doy = doy.scope[1:length(adult.spi.phen)], adult = adult.spi.phen)
+    
+    # Calculate larval phenology
+    larval.i <- filter(larvalDF, scientific_name == sci_name, year == year)
+    #verify at least 3 larval records, then: calculate smoothed data density 
+    if(nrow(larval.i) >= minNumRecs) {
+      
+      temp.larval <- density(larval.i$doy, n = length(adult.spi.phen), from = 1, to = length(adult.spi.phen))      
+      temp.larval <- data.frame(doy = doy.scope[1:length(adult.spi.phen)], 
+                                larva = round(temp.larval$y[1:length(adult.spi.phen)]*100,3))
+    } else {
+      warning("Not enough larval records for this species in this year.")
+      return(NULL)
+    }
+    
+    ## Estimate Lag
+    
+    lagresult = tibble(species = sci_name, year = year, lag = lagRange, r2 = NA)
+    
+    #loop lags
+    for(lagi in lagRange) {
+      #larvae before adults
+      temp.lalag <- temp.larval %>% 
+        add_row(doy = (1 - lagi), larva = 0) %>% 
+        mutate(doy = doy + lagi)
+      
+      temp.datalag <- merge(temp.ad, temp.lalag, by = intersect(names(temp.ad), names(temp.lalag)))
+      
+      lag.lm <- lm(larva ~ adult, data = temp.datalag)
+      
+      lagresult$r2[lagresult$lag == lagi] = summary(lag.lm)$r.squared
+      
+    } #close lag loop
+    
+    # Only return best fit lag if bestFitOnly = TRUE
+    if (bestFitOnly) {
+      lagresult = lagresult[lagresult$r2 == max(lagresult$r2), ]
+    }
+    
+    return(lagresult)
+    
+  } else {
+    warning("Not enough adult records for this species in this year.")
+  }
+  
+}
