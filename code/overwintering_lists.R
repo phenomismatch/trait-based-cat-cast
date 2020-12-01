@@ -2,9 +2,8 @@
 # Assign overwintering stage to cat count species list ("Caterpillars Count! genus_species list - Sheet1.csv") 
 # from discover life table ("DiscLifeMothInventory_Traits.xlsx - Species inventory.csv")
 library(tidyverse)
-count <- read_csv("CatCountSpeciesList.csv")
-count <- read_csv("/Users/marianaabarcazama/Desktop/Projects/trait-based-cat-cast/data/CatCountSpeciesList.csv")
-discover <- read_csv("/Users/marianaabarcazama/Desktop/Projects/trait-based-cat-cast/data/DiscLifeTraits.csv")
+count <- read_csv("data/CatCountSpeciesList.csv")
+discover <- read_csv("data/DiscLifeTraits.csv")
 
 count <- count %>% 
   mutate_if(is.character, factor) %>% 
@@ -44,4 +43,5 @@ shared_sp <- intersect(count$sp, discover$sp)
 diapa <- discover %>% 
   filter(sp %in% shared_sp)
 Ana_dr <- Ana %>% 
-  filter(set %in% list_complete) %>% 
+  filter(set %in% list_complete) ## %>%
+  
