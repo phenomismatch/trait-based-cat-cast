@@ -3,7 +3,7 @@ This repo is part of the Macrosystems Phenological Mismatch project. Here we are
 
 Repository structure:
 
-Data/ - Datasets relevant for project
+data/ - Datasets relevant for project
 
 CatCountSpeciesList.csv - species names in Caterpillars Count! data
 DiscLifeTraits.csv - Species names in discover life moth data and associated traits
@@ -14,7 +14,7 @@ lep.trait.csv - File using standarized species names, for taxonomic heirarchy an
 ma-bfly.csv - Field Trip occurrence data from the Massachusetts butterfly club
 regions.xlsx - information on preliminary regions being used to examine datasets
 
-code/
+code/  - code (currently all R) 
 bestLag.R - not needed
 overwintering_lists.R - managineg trait data for overwinter stage
 pheno_curve_lag.R - R code aligning phenology curves from GAMs or smoothed density surves and identifying the best lags between adults and larvae
