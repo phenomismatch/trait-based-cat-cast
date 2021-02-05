@@ -5,6 +5,10 @@ library(purrr)
 library(sf)
 library(tmap)
 
+## ggplot theme
+
+theme_set(theme_classic(base_size = 15))
+
 ## Read in adult lep curves
 
 lep_pheno <- read_csv("data/simpleton_pheno_pdfs.csv")
@@ -19,7 +23,6 @@ cc_sample_size <- cc_site_data %>%
   group_by(cell, Year) %>%
   summarize(n_sites = n_distinct(Name))
 
-theme_set(theme_classic(base_size = 15))
 ggplot(cc_sample_size, aes(x = Year, y = as.factor(cell), size = n_sites)) + 
   geom_point() +
   scale_x_continuous(breaks = c(seq(2010, 2020, by = 2))) +
@@ -57,66 +60,118 @@ cc_pheno <- cc_site_data %>%
             mean_fracsurv = mean(fracSurveys),
             mean_biomass = mean(meanBiomass))
 
-## Correlation with 3 diff wintering stage lep phenocurves, no lag
+## Indiv phenology for Coweeta, Prairie Ridge, Bot Garden sites
 
-cc_lep_pheno <- cc_pheno %>%
-  left_join(lep_pheno, by = c("julianweek" = "x", "Year" = "year", "cell" = "HEXcell")) %>%
-  filter(!is.na(code)) %>%
-  pivot_wider(names_from = "code", values_from = "y")
+cc_site_pheno <- cc_site_data %>%
+  filter(Name %in% c("Coweeta - BB", "Coweeta - BS", "NC Botanical Garden", "Prairie Ridge Ecostation"))
 
-cor(select(ungroup(cc_lep_pheno), 
-           mean_dens, mean_fracsurv, mean_biomass, RE, RL, RP),
-    use = "pairwise.complete.obs")
+## Check lags from -8 to 8 weeks, calculate R2 by hex-year
 
-## Check lags from -8 to 8 weeks
-
-# fn: lag lep data by x weeks, find R2 between y caterpillar metric and 3 adult lep trait groups
-lag_r2 <- function(weeks, cat_data) {
+# fn: lag lep data by x weeks, find R2 between y weekly caterpillar phenometric and 3 adult lep trait groups
+lag_r2 <- function(weeks, cat_data, lep_data) {
   l <- weeks*7
   
-  df <- lep_pheno
-  df$lag_x <- df$x - l
+  lep_data$lag_x <- lep_data$x - l
+  
+  lep_codes <- unique(lep_data$code)
   
   cc_lep_pheno <- cat_data %>%
-    left_join(df, by = c("julianweek" = "lag_x", "Year" = "year", "cell" = "HEXcell")) %>%
+    left_join(lep_data, by = c("julianweek" = "lag_x")) %>%
     filter(!is.na(code)) %>%
     pivot_wider(names_from = "code", values_from = "y")
   
-  re_r2 <- summary(lm(val ~ RE, data = cc_lep_pheno))$r.squared
-  rl_r2 <- summary(lm(val ~ RL, data = cc_lep_pheno))$r.squared
-  rp_r2 <- summary(lm(val ~ RP, data = cc_lep_pheno))$r.squared
+  # Some hex cell/years missing some adult lep groups, only calculate R2 if those groups are present
+  
+  if("RE" %in% lep_codes) {
+    re_r2 <- summary(lm(val ~ RE, data = cc_lep_pheno))$r.squared
+  } else {re_r2 <- NA}
+
+  if("RL" %in% lep_codes) {
+    rl_r2 <- summary(lm(val ~ RL, data = cc_lep_pheno))$r.squared
+  } else {rl_r2 <- NA}
+  
+  if("RP" %in% lep_codes) {
+    rp_r2 <- summary(lm(val ~ RP, data = cc_lep_pheno))$r.squared
+  } else {rp_r2 <- NA}
   
   return(data.frame(code = c("RE", "RL", "RP"), r2 = c(re_r2, rl_r2, rp_r2)))
+}
+
+# fn to compute lags for any hex, year, cat_data combination
+output_lags <- function(cell, Year, data, ...) {
+  cats <- data
+  
+  leps <- lep_pheno %>%
+    filter(year == Year, HEXcell == cell)
+  
+  res <- data.frame(lag = c(), code = c(), r2 = c())
+  for(w in -8:8){
+    
+    r2_df <- lag_r2(w, cats, leps)
+    
+    r2_df$lag <- w
+    
+    res <- rbind(res, r2_df)
+    
+  }
+  
+  res
+  
 }
 
 ## Lags between adult lep pheno curves and caterpillar biomass, density, and fraction of surveys
 
 cc_lep_lags <- cc_pheno %>%
   pivot_longer(names_to = "cat_metric", values_to = "val", mean_dens:mean_biomass) %>%
-  group_by(cat_metric) %>%
+  group_by(cat_metric, cell, Year) %>%
   nest() %>%
-  mutate(r2 = map(data, ~{
-    cats <- .
-    
-    res <- data.frame(lag = c(), code = c(), r2 = c())
-    for(w in -8:8){
-      
-      r2_df <- lag_r2(w, cats)
-      
-      r2_df$lag <- w
-      
-      res <- rbind(res, r2_df)
-      
-    }
-    
-    res
-
-  })) %>%
+  mutate(r2 = pmap(list(cell, Year, data), output_lags)) %>%
   select(-data) %>%
   unnest(cols = c("r2"))
 
 ## Plot R2 results
 
-ggplot(cc_lep_lags, aes(x = lag, y = r2)) + geom_line() + facet_grid(code ~ cat_metric)+
-  labs(x = "Lag (weeks)", y = expression(R^2))
-ggsave("figures/cc_adult_correlation.pdf")
+pdf(paste0(getwd(), "/figures/cc_adult_correlation.pdf"), height = 8, width = 10)
+
+for(c in unique(cc_lep_lags$cell)) {
+  
+  plot_df <- cc_lep_lags %>%
+    filter(cell == c)
+  
+  plot <- ggplot(plot_df, aes(x = lag, y = r2, col = as.factor(Year), group = Year)) + geom_line() + facet_grid(code ~ cat_metric)+
+    labs(x = "Lag (weeks)", y = expression(R^2), title = paste0("Hex cell ", c), col = "Year") + theme_bw(base_size = 15)
+  
+  print(plot)
+}
+
+dev.off()
+
+## Single site caterpillar to adult lep hex comparisons
+
+cc_site_lags <- cc_site_pheno %>%
+  pivot_longer(names_to = "cat_metric", values_to = "val", meanDensity:meanBiomass) %>%
+  select(Name, cell, Year, julianweek, cat_metric, val) %>%
+  group_by(cat_metric, Name, cell, Year) %>%
+  nest() %>%
+  mutate(r2 = pmap(list(cell, Year, data), output_lags)) %>%
+  select(-data) %>%
+  unnest(cols = c("r2"))
+
+## Plot R2 results
+
+pdf(paste0(getwd(), "/figures/cc_adult_correlation_NCsites.pdf"), height = 8, width = 10)
+
+for(n in unique(cc_site_lags$Name)) {
+  
+  plot_df <- cc_site_lags %>%
+    filter(Name == n)
+  
+  plot <- ggplot(plot_df, aes(x = lag, y = r2, col = as.factor(Year), group = Year)) + geom_line() + facet_grid(code ~ cat_metric)+
+    labs(x = "Lag (weeks)", y = expression(R^2), title = paste0("Site: ", n), col = "Year") + theme_bw(base_size = 15)
+  
+  print(plot)
+}
+
+dev.off()
+
+
