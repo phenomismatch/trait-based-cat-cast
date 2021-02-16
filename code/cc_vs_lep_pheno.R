@@ -1,10 +1,127 @@
 ### Comparing adult lep phenocurves to Caterpillars Count! phenology
 
+#### Libraries ####
+
 library(tidyverse)
 library(lubridate)
 library(purrr)
 library(sf)
 library(tmap)
+
+#### Functions ####
+
+# fn: lag lep data by x weeks, find R2 between y weekly caterpillar phenometric and 3 adult lep trait groups
+lag_r2 <- function(weeks, cat_data, lep_data) {
+  l <- weeks*7
+  
+  lep_data$lag_x <- lep_data$x - l
+  
+  lep_codes <- unique(lep_data$code)
+  
+  cc_lep_pheno <- cat_data %>%
+    left_join(lep_data, by = c("julianweek" = "lag_x")) %>%
+    filter(!is.na(code)) %>%
+    pivot_wider(names_from = "code", values_from = "y")
+  
+  # Some hex cell/years missing some adult lep groups, only calculate R2 if those groups are present
+  
+  if("RE" %in% lep_codes) {
+    re_r2 <- summary(lm(val ~ RE, data = cc_lep_pheno))$r.squared
+  } else {re_r2 <- NA}
+  
+  if("RL" %in% lep_codes) {
+    rl_r2 <- summary(lm(val ~ RL, data = cc_lep_pheno))$r.squared
+  } else {rl_r2 <- NA}
+  
+  if("RP" %in% lep_codes) {
+    rp_r2 <- summary(lm(val ~ RP, data = cc_lep_pheno))$r.squared
+  } else {rp_r2 <- NA}
+  
+  return(data.frame(code = c("RE", "RL", "RP"), r2 = c(re_r2, rl_r2, rp_r2)))
+}
+
+# fn to compute lags for any hex, year, cat_data combination
+output_lags <- function(cell, Year, data, ...) {
+  cats <- data
+  
+  leps <- lep_pheno %>%
+    filter(year == Year, HEXcell == cell)
+  
+  res <- data.frame(lag = c(), code = c(), r2 = c())
+  for(w in -8:8){
+    
+    r2_df <- lag_r2(w, cats, leps)
+    
+    r2_df$lag <- w
+    
+    res <- rbind(res, r2_df)
+    
+  }
+  
+  res
+  
+}
+
+## Backcasting fn - from code/gdd_backcast.R
+
+backcast_cats <- function(my.hexes, my.years) {
+  #set GDD model quantities
+  gddP<-154
+  gddL<-330
+  
+  ##Import Formatted GDD DATA
+  #Import (these day only include DOY 60-250. Elise has asked Naresh for a version with the whole year.)
+  load("data/gdd_data2012-2017.RData")
+  
+  ## Import adult Lep phenology pdf data
+  phenoraw<-read_csv("data/simpleton_pheno_pdfs.csv")
+  #Filter to RL data in target hexes & years
+  phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
+  names(phenoDF)<-c("DOY","pdf","year","hex","code")
+  
+  ##MERGE TABLES
+  pheno.x<-merge(phenoDF, gddDF,by=intersect(names(phenoDF),names(gddDF)))
+  pheno.x<-pheno.x %>%
+    mutate(gddp=accumGDD-gddP, doyp=0, gddl=accumGDD-gddL, doyl=0)
+  
+  for(i in 1:nrow(pheno.x)) {
+    temp<-filter(gddDF, year==pheno.x$year[i], hex==pheno.x$hex[i])
+    #Because we don't have DOY0-59 GDD and we have negative gddp and gddl values:
+    day1<-min(pheno.x$DOY[pheno.x$year==pheno.x$year[i] & pheno.x$hex==pheno.x$hex[i] & pheno.x$gddl>0])
+    if(pheno.x$gddl[i]<1) { pheno.x$doyl[i]<- floor(pheno.x$DOY[i]/day1*60)
+    } else {   pheno.x$doyl[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddl[i])[1]] }
+    if(pheno.x$gddp[i]<1) { pheno.x$doyp[i]<- floor(pheno.x$DOY[i]/day1*60)
+    } else { pheno.x$doyp[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddp[i])[1]] }
+  }
+  
+  return(pheno.x)
+}
+
+# fn to compute lags with backcasted lep data for any hex, year, cat_data combination
+output_lags_backcast <- function(cell, Year, data, ...) {
+  cats <- data
+  
+  leps <- backcast_pheno %>%
+    filter(year == Year, hex == cell) %>%
+    rename(x = "doyl", y = "pdf") # match with lep_pheno colnames
+  
+  res <- data.frame(lag = c(), code = c(), r2 = c())
+  for(w in -8:8){
+    
+    r2_df <- lag_r2(w, cats, leps)
+    
+    r2_df$lag <- w
+    
+    res <- rbind(res, r2_df)
+    
+  }
+  
+  res
+  
+}
+
+
+#### Set up ####
 
 ## ggplot theme
 
@@ -53,6 +170,8 @@ cc_site_map <- tm_shape(na_map) + tm_polygons() +
   tm_layout(legend.text.size = 1, legend.title.size = 1.5)
 # tmap_save(cc_site_map, "figures/cc_site_map.pdf")
 
+#### Correlations of lep adult curves and CC pheno curves ####
+
 ## CC hex phenology
 
 cc_pheno <- cc_site_data %>%
@@ -67,58 +186,6 @@ cc_site_pheno <- cc_site_data %>%
   filter(Name %in% c("Coweeta - BB", "Coweeta - BS", "NC Botanical Garden", "Prairie Ridge Ecostation"))
 
 ## Check lags from -8 to 8 weeks, calculate R2 by hex-year
-
-# fn: lag lep data by x weeks, find R2 between y weekly caterpillar phenometric and 3 adult lep trait groups
-lag_r2 <- function(weeks, cat_data, lep_data) {
-  l <- weeks*7
-  
-  lep_data$lag_x <- lep_data$x - l
-  
-  lep_codes <- unique(lep_data$code)
-  
-  cc_lep_pheno <- cat_data %>%
-    left_join(lep_data, by = c("julianweek" = "lag_x")) %>%
-    filter(!is.na(code)) %>%
-    pivot_wider(names_from = "code", values_from = "y")
-  
-  # Some hex cell/years missing some adult lep groups, only calculate R2 if those groups are present
-  
-  if("RE" %in% lep_codes) {
-    re_r2 <- summary(lm(val ~ RE, data = cc_lep_pheno))$r.squared
-  } else {re_r2 <- NA}
-
-  if("RL" %in% lep_codes) {
-    rl_r2 <- summary(lm(val ~ RL, data = cc_lep_pheno))$r.squared
-  } else {rl_r2 <- NA}
-  
-  if("RP" %in% lep_codes) {
-    rp_r2 <- summary(lm(val ~ RP, data = cc_lep_pheno))$r.squared
-  } else {rp_r2 <- NA}
-  
-  return(data.frame(code = c("RE", "RL", "RP"), r2 = c(re_r2, rl_r2, rp_r2)))
-}
-
-# fn to compute lags for any hex, year, cat_data combination
-output_lags <- function(cell, Year, data, ...) {
-  cats <- data
-  
-  leps <- lep_pheno %>%
-    filter(year == Year, HEXcell == cell)
-  
-  res <- data.frame(lag = c(), code = c(), r2 = c())
-  for(w in -8:8){
-    
-    r2_df <- lag_r2(w, cats, leps)
-    
-    r2_df$lag <- w
-    
-    res <- rbind(res, r2_df)
-    
-  }
-  
-  res
-  
-}
 
 ## Lags between adult lep pheno curves and caterpillar biomass, density, and fraction of surveys
 
@@ -175,42 +242,7 @@ for(n in unique(cc_site_lags$Name)) {
 
 dev.off()
 
-### Repeat lag comparison with backcasted caterpillars
-
-## Backcasting fn - from code/gdd_backcast.R
-
-backcast_cats <- function(my.hexes, my.years) {
-  #set GDD model quantities
-  gddP<-154
-  gddL<-330
-  
-  ##Import Formatted GDD DATA
-  #Import (these day only include DOY 60-250. Elise has asked Naresh for a version with the whole year.)
-  load("data/gdd_data2012-2017.RData")
-  
-  ## Import adult Lep phenology pdf data
-  phenoraw<-read_csv("data/simpleton_pheno_pdfs.csv")
-  #Filter to RL data in target hexes & years
-  phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
-  names(phenoDF)<-c("DOY","pdf","year","hex","code")
-  
-  ##MERGE TABLES
-  pheno.x<-merge(phenoDF, gddDF,by=intersect(names(phenoDF),names(gddDF)))
-  pheno.x<-pheno.x %>%
-    mutate(gddp=accumGDD-gddP, doyp=0, gddl=accumGDD-gddL, doyl=0)
-  
-  for(i in 1:nrow(pheno.x)) {
-    temp<-filter(gddDF, year==pheno.x$year[i], hex==pheno.x$hex[i])
-    #Because we don't have DOY0-59 GDD and we have negative gddp and gddl values:
-    day1<-min(pheno.x$DOY[pheno.x$year==pheno.x$year[i] & pheno.x$hex==pheno.x$hex[i] & pheno.x$gddl>0])
-    if(pheno.x$gddl[i]<1) { pheno.x$doyl[i]<- floor(pheno.x$DOY[i]/day1*60)
-    } else {   pheno.x$doyl[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddl[i])[1]] }
-    if(pheno.x$gddp[i]<1) { pheno.x$doyp[i]<- floor(pheno.x$DOY[i]/day1*60)
-    } else { pheno.x$doyp[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddp[i])[1]] }
-  }
-  
-  return(pheno.x)
-}
+#### Correlations of backcasted cat curves and CC pheno curves ####
 
 ## Backcast pheno PDFs for hex-years with CC data
 
@@ -221,29 +253,6 @@ hexes <- unique(cc_pheno_1217$cell)
 years <- unique(cc_pheno_1217$Year)
 
 backcast_pheno <- backcast_cats(hexes, years)
-
-# fn to compute lags with backcasted lep data for any hex, year, cat_data combination
-output_lags_backcast <- function(cell, Year, data, ...) {
-  cats <- data
-  
-  leps <- backcast_pheno %>%
-    filter(year == Year, hex == cell) %>%
-    rename(x = "doyl", y = "pdf") # match with lep_pheno colnames
-  
-  res <- data.frame(lag = c(), code = c(), r2 = c())
-  for(w in -8:8){
-    
-    r2_df <- lag_r2(w, cats, leps)
-    
-    r2_df$lag <- w
-    
-    res <- rbind(res, r2_df)
-    
-  }
-  
-  res
-  
-}
 
 ## Test lags with CC hexes
 
@@ -302,3 +311,93 @@ for(n in unique(cc_site_cat_lags$Name)) {
 }
 
 dev.off()
+
+##### Deviations ####
+
+## Compare early/late years in catcast and CC sites using deviations from mean 
+## Calculate curve centroids for cat backcast and CC sites
+
+pheno_centroids <- backcast_pheno %>%
+  left_join(cc_pheno_1217, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
+  group_by(hex, year) %>%
+  mutate(catcount_centr = sum(doyl*mean_fracsurv, na.rm = T)/sum(mean_fracsurv, na.rm = T),
+         catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T))
+
+## Plot phenocurves for catcast
+
+pdf(paste0(getwd(), "/figures/catcast_phenocurves.pdf"), height = 8, width = 10)
+
+for(c in unique(pheno_centroids$hex)) {
+  
+  plot_df <- pheno_centroids %>%
+    filter(hex == c)
+  
+  plot <- ggplot(plot_df, aes(x = doyl, y = pdf)) + 
+    geom_line() +
+    geom_vline(aes(xintercept = catcast_centr), lty = 2, col = "blue") +
+    facet_wrap(~year) +
+    labs(x = "Day of year", y = "PDF", 
+         title = paste0("Hex cell ", c)) + theme_bw(base_size = 15)
+  
+  print(plot)
+}
+
+dev.off()
+
+## Correlation between early/late years 
+
+pheno_dev <- pheno_centroids %>%
+  distinct(year, hex, catcount_centr, catcast_centr) %>%
+  group_by(hex) %>%
+  mutate(mean_catcast_centr = mean(catcast_centr, na.rm = T),
+         mean_catcount_centr = mean(catcount_centr, na.rm = T),
+         catcast_dev = catcast_centr - mean_catcast_centr,
+         catcount_dev = catcount_centr - mean_catcount_centr)
+
+r_dev <- cor(pheno_dev$catcast_dev, pheno_dev$catcount_dev, use = "pairwise.complete.obs")
+
+ggplot(pheno_dev, aes(x = catcount_dev, y = catcast_dev)) + geom_point() +
+  geom_abline(intercept = 0, slope = 1, lty = 2) +
+  annotate(geom = "text", x = 5, y = 30, label = paste0("r  = ", round(r_dev, 2)), size = 6) +
+  labs(x = "Caterpillars Count! centroid deviation", y = "CatCast centroid deviation")
+ggsave("figures/catcast_catcount_deviation_1to1.pdf")
+
+## Early/late years in catcast and CC sites with temperature 
+
+hex_temps <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
+
+temp_dev <- hex_temps %>%
+  group_by(cell) %>%
+  mutate(temp_avg = mean(mean_temp),
+         temp_dev = mean_temp - temp_avg)
+
+pheno_dev_temps <- pheno_dev %>%
+  left_join(temp_dev, by = c("hex" = "cell", "year")) %>%
+  pivot_longer(names_to = "data", values_to = "dev", catcast_dev:catcount_dev) %>%
+  mutate(plot_labels = case_when(data == "catcast_dev" ~ "CatCast",
+                                 data == "catcount_dev" ~ "CatCount"))
+
+catcast_mod <- lm(dev ~ temp_dev, data = filter(pheno_dev_temps, data == "catcast_dev"))
+
+catcast_pval <- summary(catcast_mod)$coefficients[2,4]
+catcast_r2 <- summary(catcast_mod)$r.squared
+
+catcount_mod <- lm(dev ~ temp_dev, data = filter(pheno_dev_temps, data == "catcount_dev"))
+
+catcount_pval <- summary(catcount_mod)$coefficients[2,4]
+catcount_r2 <- summary(catcount_mod)$r.squared
+
+ggplot(pheno_dev_temps, aes(x = temp_dev, y = dev, col = plot_labels)) + geom_point() + 
+  geom_smooth(method = "lm", se = F) +
+  scale_color_manual(values = c("darkorchid", "dodgerblue")) +
+  annotate(geom = "text", x = -1, y = -40, 
+           label = paste0("Slope p-val = ", round(catcast_pval, 2)), col = "darkorchid") +
+  annotate(geom = "text", x = -1, y = -35, 
+           label = paste0("R2 = ", round(catcast_r2, 2)), col = "darkorchid") +
+  annotate(geom = "text", x = -1, y = -25, 
+           label = paste0("Slope p-val = ", round(catcount_pval, 2)), col = "dodgerblue") +
+  annotate(geom = "text", x = -1, y = -20, 
+           label = paste0("R2 = ", round(catcount_r2, 2)), col = "dodgerblue") +
+  theme(legend.position = c(0.8, 0.2)) +
+  labs(x = "Spring temperature deviation", y = "Caterpillar centroid deviation", col = "")
+ggsave("figures/catcast_catcount_temp_deviation.pdf")
