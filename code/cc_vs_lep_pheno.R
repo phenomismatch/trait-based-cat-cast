@@ -312,31 +312,37 @@ for(n in unique(cc_site_cat_lags$Name)) {
 
 dev.off()
 
-##### Deviations ####
+##### Phenometrics ####
 
 ## Compare early/late years in catcast and CC sites using deviations from mean 
 ## Calculate curve centroids for cat backcast and CC sites
+
+lep_join <- lep_pheno %>%
+  filter(code == "RL", year <= 2017 & year >= 2012, HEXcell %in% c(702, 703))
 
 pheno_centroids <- backcast_pheno %>%
   left_join(cc_pheno_1217, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
   group_by(hex, year) %>%
   mutate(catcount_centr = sum(doyl*mean_fracsurv, na.rm = T)/sum(mean_fracsurv, na.rm = T),
-         catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T))
+         catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T)) %>%
+  right_join(lep_join, by = c("year", "code", "doyl" = "x", "hex" = "HEXcell")) %>%
+  mutate(adult_peak = doyl[y == max(y, na.rm = T)])
 
 ## Plot phenocurves for catcast
 
-pdf(paste0(getwd(), "/figures/catcast_phenocurves.pdf"), height = 8, width = 10)
+pdf(paste0(getwd(), "/figures/catcast_phenocurves.pdf"), height = 8, width = 12)
 
 for(c in unique(pheno_centroids$hex)) {
   
   plot_df <- pheno_centroids %>%
     filter(hex == c)
   
-  plot <- ggplot(plot_df, aes(x = doyl, y = pdf)) + 
-    geom_line() +
-    geom_vline(aes(xintercept = catcast_centr), lty = 2, col = "blue") +
+  plot <- ggplot(plot_df, aes(x = doyl)) + 
+    geom_smooth(aes(y = pdf, col = "Larvae"), se = F) +
+    geom_line(aes(y = y, col = "Adults")) + 
+    geom_vline(aes(xintercept = catcast_centr, col = "Larvae"), lty = 2) +
     facet_wrap(~year) +
-    labs(x = "Day of year", y = "PDF", 
+    labs(x = "Day of year", y = "PDF", col = "Life stage",
          title = paste0("Hex cell ", c)) + theme_bw(base_size = 15)
   
   print(plot)
@@ -366,38 +372,36 @@ ggsave("figures/catcast_catcount_deviation_1to1.pdf")
 
 hex_temps <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
 
-temp_dev <- hex_temps %>%
-  group_by(cell) %>%
-  mutate(temp_avg = mean(mean_temp),
-         temp_dev = mean_temp - temp_avg)
+pheno_temps <- pheno_centroids %>%
+  ungroup() %>%
+  distinct(year, hex, code, catcount_centr, catcast_centr, adult_peak) %>%
+  filter(!is.na(catcount_centr)) %>%
+  left_join(hex_temps, by = c("hex" = "cell", "year")) %>%
+  pivot_longer(names_to = "data", values_to = "pheno", catcount_centr:adult_peak) %>%
+  mutate(plot_labels = case_when(data == "catcast_centr" ~ "CatCast",
+                                 data == "catcount_centr" ~ "CatCount",
+                                 data == "adult_peak" ~ "Adult curve"))
 
-pheno_dev_temps <- pheno_dev %>%
-  left_join(temp_dev, by = c("hex" = "cell", "year")) %>%
-  pivot_longer(names_to = "data", values_to = "dev", catcast_dev:catcount_dev) %>%
-  mutate(plot_labels = case_when(data == "catcast_dev" ~ "CatCast",
-                                 data == "catcount_dev" ~ "CatCount"))
+catcount_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "catcount_centr")))
 
-catcast_mod <- lm(dev ~ temp_dev, data = filter(pheno_dev_temps, data == "catcast_dev"))
+catcast_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "catcast_centr")))
 
-catcast_pval <- summary(catcast_mod)$coefficients[2,4]
-catcast_r2 <- summary(catcast_mod)$r.squared
+adult_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "adult_peak")))
 
-catcount_mod <- lm(dev ~ temp_dev, data = filter(pheno_dev_temps, data == "catcount_dev"))
+# ggplot cols
+cols <- scales::hue_pal()(3)
 
-catcount_pval <- summary(catcount_mod)$coefficients[2,4]
-catcount_r2 <- summary(catcount_mod)$r.squared
-
-ggplot(pheno_dev_temps, aes(x = temp_dev, y = dev, col = plot_labels)) + geom_point() + 
+ggplot(pheno_temps, aes(x = mean_temp, y = pheno, col = plot_labels)) + 
+  geom_point(size = 2, alpha = 0.5) + 
   geom_smooth(method = "lm", se = F) +
-  scale_color_manual(values = c("darkorchid", "dodgerblue")) +
-  annotate(geom = "text", x = -1, y = -40, 
-           label = paste0("Slope p-val = ", round(catcast_pval, 2)), col = "darkorchid") +
-  annotate(geom = "text", x = -1, y = -35, 
-           label = paste0("R2 = ", round(catcast_r2, 2)), col = "darkorchid") +
-  annotate(geom = "text", x = -1, y = -25, 
-           label = paste0("Slope p-val = ", round(catcount_pval, 2)), col = "dodgerblue") +
-  annotate(geom = "text", x = -1, y = -20, 
-           label = paste0("R2 = ", round(catcount_r2, 2)), col = "dodgerblue") +
-  theme(legend.position = c(0.8, 0.2)) +
-  labs(x = "Spring temperature deviation", y = "Caterpillar centroid deviation", col = "")
-ggsave("figures/catcast_catcount_temp_deviation.pdf")
+  annotate(geom = "text", x = 15.5, y = 125, 
+           label = paste0("p = ", round(catcount_mod$coefficients[2,4], 2), "; R2 = ", round(catcount_mod$r.squared, 2)), 
+           col = cols[3]) +
+  annotate(geom = "text", x = 15.5, y = 130, 
+           label = paste0("p = ", round(catcast_mod$coefficients[2,4], 2), "; R2 = ", round(catcast_mod$r.squared, 2)), 
+           col = cols[2]) +
+  annotate(geom = "text", x = 15.5, y = 135, 
+           label = paste0("Slope p = ", round(adult_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
+           col = cols[1]) +
+  labs(x = "Avg spring temperature (March-June)", y = "Peak/centroid date", col = "")
+ggsave("figures/catcast_catcount_temp.pdf", units = "in", height = 6, width = 8)
