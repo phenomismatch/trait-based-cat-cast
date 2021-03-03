@@ -23,6 +23,11 @@ degreedays=function(tmin,         #minimum daily temperature
     warning("No calculation: Missing Temperature Parameter(s)", immediate. = TRUE)
     return(NA)
     stop
+    }
+  ## Check that temps are not NA
+  if(is.na(tmin) | is.na(tmax)) {
+    warning("No calculation: Temperature(s) are NA", immediate. = TRUE)
+    return(NA)
   }
   ## Check that temps are numeric
   if(!is.numeric(tmin) | !is.numeric(tmax)){
