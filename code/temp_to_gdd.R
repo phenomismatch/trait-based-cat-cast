@@ -1,5 +1,6 @@
 ## Process daily temperature data and calculate GDD at 50 km and hex scales
 ## Input climate data: CPC 50 km min and max temperature data
+## Link to CPC climate downloads: https://psl.noaa.gov/data/gridded/data.cpc.globaltemp.html#plot
 ## Grace Di Cecco
 
 library(raster)
@@ -69,11 +70,11 @@ cpc_raster <- function(cpc_dir, file) {
 }
 
 # Function: calculate GDD from CPC daily tmin/tmax data
-# Input: year, CPC tmin and tmax raster bricks
+# Input: CPC tmin and tmax raster bricks
 # Other inputs: spatial window for GDD calculations
 # Output: data frame containing daily gdd for the year
 
-cpc_gdd <- function(year, tmin_raster, tmax_raster,
+cpc_gdd <- function(tmin_raster, tmax_raster,
                     lat_min = 15, lat_max = 60, 
                     lon_min = -100, lon_max = -40) {
   
@@ -124,7 +125,7 @@ for(y in years) {
   tmax_raster <- cpc_raster(cpc_dir, file = f_tmax)
   
   # process tmin and tmax daily temps into GDD
-  gdd_df <- cpc_gdd(year = y, tmin_raster, tmax_raster)
+  gdd_df <- cpc_gdd(tmin_raster, tmax_raster)
   
   # write GDD data file to output directory
   write.csv(gdd_df, paste0(output_dir, "cpc_gdd_", y, ".csv"), row.names = F)

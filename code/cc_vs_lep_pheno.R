@@ -70,11 +70,15 @@ backcast_cats <- function(my.hexes, my.years) {
   gddL<-330
   
   ##Import Formatted GDD DATA
-  #Import (these day only include DOY 60-250. Elise has asked Naresh for a version with the whole year.)
-  load("data/gdd_data2012-2017.RData")
+  gddDF <- read.csv("data/derived_data/hex_gdd_2000-2020.csv") %>%
+    rename(DOY = "doy", hex = "hex_cell") %>%
+    na.omit() %>%
+    group_by(year, hex) %>%
+    arrange(date) %>%
+    mutate(accumGDD = cumsum(meanGDD)) 
   
   ## Import adult Lep phenology pdf data
-  phenoraw<-read_csv("data/simpleton_pheno_pdfs.csv")
+  phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs.csv")
   #Filter to RL data in target hexes & years
   phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
   names(phenoDF)<-c("DOY","pdf","year","hex","code")
@@ -129,11 +133,11 @@ theme_set(theme_classic(base_size = 15))
 
 ## Read in adult lep curves
 
-lep_pheno <- read_csv("data/simpleton_pheno_pdfs.csv")
+lep_pheno <- read_csv("data/derived_data/simpleton_pheno_pdfs.csv")
 
 ## Read in CatCount data (weekly phenology at hex cells, sites with at least 6 good weeks)
 
-cc_site_data <- read_csv("data/cc_subset_trait_based_pheno.csv")
+cc_site_data <- read_csv("data/derived_data/cc_subset_trait_based_pheno.csv")
 
 ## CatCount data availability
 
@@ -246,17 +250,14 @@ dev.off()
 
 ## Backcast pheno PDFs for hex-years with CC data
 
-cc_pheno_1217 <- cc_pheno %>%
-  filter(Year >= 2012 & Year <= 2017)
-
-hexes <- unique(cc_pheno_1217$cell)
-years <- unique(cc_pheno_1217$Year)
+hexes <- unique(cc_pheno$cell)
+years <- unique(cc_pheno$Year)
 
 backcast_pheno <- backcast_cats(hexes, years)
 
 ## Test lags with CC hexes
 
-cc_cat_lags <- cc_pheno_1217 %>%
+cc_cat_lags <- cc_pheno %>%
   pivot_longer(names_to = "cat_metric", values_to = "val", mean_dens:mean_biomass) %>%
   group_by(cat_metric, cell, Year) %>%
   nest() %>%
@@ -287,7 +288,6 @@ dev.off()
 cc_site_cat_lags <- cc_site_pheno %>%
   pivot_longer(names_to = "cat_metric", values_to = "val", meanDensity:meanBiomass) %>%
   select(Name, cell, Year, julianweek, cat_metric, val) %>%
-  filter(Year >= 2012 & Year <= 2017) %>%
   group_by(cat_metric, Name, cell, Year) %>%
   nest() %>%
   mutate(r2 = pmap(list(cell, Year, data), output_lags_backcast)) %>%
@@ -314,19 +314,22 @@ dev.off()
 
 ##### Phenometrics ####
 
-## Compare early/late years in catcast and CC sites using deviations from mean 
+## Compare early/late years in catcast and CC sites using deviations from mean and z-scores
 ## Calculate curve centroids for cat backcast and CC sites
+## 10% accumulation for adults
 
 lep_join <- lep_pheno %>%
-  filter(code == "RL", year <= 2017 & year >= 2012, HEXcell %in% c(702, 703))
+  filter(code == "RL", year %in% years, HEXcell %in% hexes) %>%
+  filter(!grepl("'\.", x))
 
 pheno_centroids <- backcast_pheno %>%
-  left_join(cc_pheno_1217, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
+  left_join(cc_pheno, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
   group_by(hex, year) %>%
   mutate(catcount_centr = sum(doyl*mean_fracsurv, na.rm = T)/sum(mean_fracsurv, na.rm = T),
          catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T)) %>%
   right_join(lep_join, by = c("year", "code", "doyl" = "x", "hex" = "HEXcell")) %>%
-  mutate(adult_peak = doyl[y == max(y, na.rm = T)])
+  mutate(adult_peak = mean(doyl[y == max(y, na.rm = T)]),
+         adult_10 = min(doyl[y >= 0.1*max(y, na.rm = T)]))
 
 ## Plot phenocurves for catcast
 
@@ -351,36 +354,52 @@ for(c in unique(pheno_centroids$hex)) {
 dev.off()
 
 ## Correlation between early/late years 
+## Calculate deviations and z-scores
 
 pheno_dev <- pheno_centroids %>%
   distinct(year, hex, catcount_centr, catcast_centr) %>%
   group_by(hex) %>%
   mutate(mean_catcast_centr = mean(catcast_centr, na.rm = T),
          mean_catcount_centr = mean(catcount_centr, na.rm = T),
+         sd_catcount_centr = sd(catcount_centr, na.rm = T),
+         sd_catcast_centr = sd(catcast_centr, na.rm = T),
          catcast_dev = catcast_centr - mean_catcast_centr,
-         catcount_dev = catcount_centr - mean_catcount_centr)
+         catcount_dev = catcount_centr - mean_catcount_centr,
+         catcast_z = catcast_dev/sd_catcast_centr,
+         catcount_z = catcount_dev/sd_catcount_centr)
 
 r_dev <- cor(pheno_dev$catcast_dev, pheno_dev$catcount_dev, use = "pairwise.complete.obs")
 
+r_z <- cor(pheno_dev$catcast_z, pheno_dev$catcount_z, use = "pairwise.complete.obs")
+
+# plot correlation of deviations
 ggplot(pheno_dev, aes(x = catcount_dev, y = catcast_dev)) + geom_point() +
   geom_abline(intercept = 0, slope = 1, lty = 2) +
   annotate(geom = "text", x = 5, y = 30, label = paste0("r  = ", round(r_dev, 2)), size = 6) +
   labs(x = "Caterpillars Count! centroid deviation", y = "CatCast centroid deviation")
 ggsave("figures/catcast_catcount_deviation_1to1.pdf")
 
+# plot correlation of z scores
+ggplot(pheno_dev, aes(x = catcount_z, y = catcast_z)) + geom_point() +
+  geom_abline(intercept = 0, slope = 1, lty = 2) +
+  annotate(geom = "text", x = 1.5, y = -2, label = paste0("r  = ", round(r_z, 2)), size = 6) +
+  labs(x = "z-Caterpillars Count! centroid", y = "z-CatCast centroid")
+ggsave("figures/catcast_catcount_zscores_1to1.pdf")
+
 ## Early/late years in catcast and CC sites with temperature 
 
-hex_temps <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
+hex_temps <- read.csv("data/derived_data/hex_mean_temps.csv", stringsAsFactors = F)
 
 pheno_temps <- pheno_centroids %>%
   ungroup() %>%
-  distinct(year, hex, code, catcount_centr, catcast_centr, adult_peak) %>%
+  distinct(year, hex, code, catcount_centr, catcast_centr, adult_peak, adult_10) %>%
   filter(!is.na(catcount_centr)) %>%
   left_join(hex_temps, by = c("hex" = "cell", "year")) %>%
-  pivot_longer(names_to = "data", values_to = "pheno", catcount_centr:adult_peak) %>%
+  pivot_longer(names_to = "data", values_to = "pheno", catcount_centr:adult_10) %>%
   mutate(plot_labels = case_when(data == "catcast_centr" ~ "CatCast",
                                  data == "catcount_centr" ~ "CatCount",
-                                 data == "adult_peak" ~ "Adult curve"))
+                                 data == "adult_peak" ~ "Adult max",
+                                 data == "adult_10" ~ "Adult 10%"))
 
 catcount_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "catcount_centr")))
 
@@ -388,20 +407,25 @@ catcast_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == 
 
 adult_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "adult_peak")))
 
+adult10_mod <-  summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "adult_10")))
+
 # ggplot cols
-cols <- scales::hue_pal()(3)
+cols <- scales::hue_pal()(4)
 
 ggplot(pheno_temps, aes(x = mean_temp, y = pheno, col = plot_labels)) + 
   geom_point(size = 2, alpha = 0.5) + 
   geom_smooth(method = "lm", se = F) +
-  annotate(geom = "text", x = 15.5, y = 125, 
+  annotate(geom = "text", x = 9, y = 50, 
            label = paste0("p = ", round(catcount_mod$coefficients[2,4], 2), "; R2 = ", round(catcount_mod$r.squared, 2)), 
-           col = cols[3]) +
-  annotate(geom = "text", x = 15.5, y = 130, 
+           col = cols[4]) +
+  annotate(geom = "text", x = 9, y = 56, 
            label = paste0("p = ", round(catcast_mod$coefficients[2,4], 2), "; R2 = ", round(catcast_mod$r.squared, 2)), 
+           col = cols[3]) +
+  annotate(geom = "text", x = 9, y = 62, 
+           label = paste0("p = ", round(adult_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
            col = cols[2]) +
-  annotate(geom = "text", x = 15.5, y = 135, 
-           label = paste0("Slope p = ", round(adult_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
+  annotate(geom = "text", x = 9, y = 68, 
+           label = paste0("Slope p = ", round(adult10_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
            col = cols[1]) +
   labs(x = "Avg spring temperature (March-June)", y = "Peak/centroid date", col = "")
 ggsave("figures/catcast_catcount_temp.pdf", units = "in", height = 6, width = 8)
