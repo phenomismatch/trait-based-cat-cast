@@ -78,7 +78,7 @@ backcast_cats <- function(my.hexes, my.years) {
     mutate(accumGDD = cumsum(meanGDD)) 
   
   ## Import adult Lep phenology pdf data
-  phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs.csv")
+  phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.csv")
   #Filter to RL data in target hexes & years
   phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
   names(phenoDF)<-c("DOY","pdf","year","hex","code")
@@ -133,7 +133,7 @@ theme_set(theme_classic(base_size = 15))
 
 ## Read in adult lep curves
 
-lep_pheno <- read_csv("data/derived_data/simpleton_pheno_pdfs.csv")
+lep_pheno <- read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.csv")
 
 ## Read in CatCount data (weekly phenology at hex cells, sites with at least 6 good weeks)
 
