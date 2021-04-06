@@ -7,7 +7,6 @@
 ##libraries
 library(tidyverse) # tidy
 library(lubridate) # for dates
-library(ggplot) # for visualizations
 #############################################################################
 ## Scope & Data Imports
 
@@ -24,7 +23,7 @@ my.years<-c(2017)
 load("data/gdd_data2012-2017.RData")
 
 ## Import adult Lep phenology pdf data
-phenoraw<-read_csv("data/simpleton_pheno_pdfs.csv")
+phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.csv")
 #Filter to RL data in target hexes & years
 phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
 names(phenoDF)<-c("DOY","pdf","year","hex","code")
@@ -37,11 +36,12 @@ pheno.x<-pheno.x %>%
 for(i in 1:nrow(pheno.x)) {
   temp<-filter(gddDF, year==pheno.x$year[i], hex==pheno.x$hex[i])
   #Because we don't have DOY0-59 GDD and we have negative gddp and gddl values:
-  day1<-min(pheno.x$DOY[pheno.x$year==pheno.x$year[i] & pheno.x$hex==pheno.x$hex[i] & pheno.x$gddl>0])
-  if(pheno.x$gddl[i]<1) { pheno.x$doyl[i]<- floor(pheno.x$DOY[i]/day1*60)
-  } else {   pheno.x$doyl[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddl[i])[1]] }
-  if(pheno.x$gddp[i]<1) { pheno.x$doyp[i]<- floor(pheno.x$DOY[i]/day1*60)
-  } else { pheno.x$doyp[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddp[i])[1]] }
+  if(pheno.x$gddl[i]<0) {
+    pheno.x$doyl[i]<-NA} else {
+      pheno.x$doyl[i]<-temp$DOY[which(temp$accumGDD>=pheno.x$gddl[i])[1]]}
+  if(pheno.x$gddp[i]<0) {
+    pheno.x$doyp[i]<-NA} else {
+      pheno.x$doyp[i]<-temp$DOY[which(temp$accumGDD>=pheno.x$gddp[i])[1]]}
 }
 
 summary(pheno.x)
@@ -52,8 +52,12 @@ summary(pheno.x)
 
 #plot results
 figPhenoX<-ggplot(data=pheno.x, aes(x=doyl, y=pdf, group=interaction(year, hex), color=as.factor(hex))) + 
-  geom_line() + xlim(c(0,330)) + theme_classic() + theme(legend.position='none',axis.text.y = element_blank()) + 
-  scale_color_manual(values=fig4acolors) + labs(x="DOY", y="") + facet_wrap(~year) + ggtitle("Caterpillar biomass estimates")
+  geom_line() + 
+  xlim(c(0,330)) + 
+  theme_classic() + 
+  theme(legend.position='none',axis.text.y = element_blank()) + 
+  labs(x="DOY", y="") + facet_wrap(~year) + 
+  ggtitle("Caterpillar biomass estimates")
 figPhenoX
 
 
@@ -74,9 +78,9 @@ figGddYears<-ggplot(data=filter(gddDF, hex==618, year%in%c(2012,2017)), aes(x=DO
   annotate(geom="text", x=100, y=c(1600,1400), label=c("Warm Year","Cold Year"), color=c("seagreen4","darkslategray"), hjust=0, size=5)
 figGddYears
 
-figAdultPhenoHexes<-ggplot(data=filter(phenoDF, HEXcell%in%my.hexes, year%in%c(2015:2017), code=="RL"), aes(x=x, y=y, group=interaction(year, HEXcell), color=as.factor(HEXcell))) + 
+figAdultPhenoHexes<-ggplot(data=filter(phenoDF, hex%in%my.hexes, year%in%c(2015:2017), code=="RL"), aes(x=DOY, y=pdf, group=interaction(year, hex), color=as.factor(hex))) + 
   geom_line() + theme_classic() + theme(legend.position='none',axis.text.y = element_blank()) + 
-  scale_color_manual(values=fig4acolors) + labs(x="DOY", y="") + facet_wrap(~year) + ggtitle("Adult phenology estimates")
+  scale_color_viridis_d() + labs(x="DOY", y="") + facet_wrap(~year) + ggtitle("Adult phenology estimates")
 figAdultPhenoHexes
 
 figAdultPhenoYears<-ggplot(data=filter(phenoDF, HEXcell==595, year%in%c(2012,2017), code=="RL"), aes(x=x, y=y, group=interaction(year, HEXcell), color=as.factor(year))) + 
@@ -86,7 +90,7 @@ figAdultPhenoYears
 
 
 ##Michael's output:
-phenoraw<-read_csv("adult_data/simpleton_pheno_pdfs.csv")
+phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.csv")
 #add index to filter data
 
 plotPhen1<- function(
