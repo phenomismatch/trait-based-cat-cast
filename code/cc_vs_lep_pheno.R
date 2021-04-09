@@ -62,45 +62,6 @@ output_lags <- function(cell, Year, data, ...) {
   
 }
 
-## Backcasting fn - from code/gdd_backcast.R
-
-backcast_cats <- function(my.hexes, my.years) {
-  #set GDD model quantities
-  gddP<-154
-  gddL<-330
-  
-  ##Import Formatted GDD DATA
-  gddDF <- read.csv("data/derived_data/hex_gdd_2000-2020.csv") %>%
-    rename(DOY = "doy", hex = "hex_cell") %>%
-    na.omit() %>%
-    group_by(year, hex) %>%
-    arrange(date) %>%
-    mutate(accumGDD = cumsum(meanGDD)) 
-  
-  ## Import adult Lep phenology pdf data
-  phenoraw<-read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.csv")
-  #Filter to RL data in target hexes & years
-  phenoDF<-filter(phenoraw, HEXcell%in%my.hexes, year%in%my.years, code=="RL")
-  names(phenoDF)<-c("DOY","pdf","year","hex","code")
-  
-  ##MERGE TABLES
-  pheno.x<-merge(phenoDF, gddDF,by=intersect(names(phenoDF),names(gddDF)))
-  pheno.x<-pheno.x %>%
-    mutate(gddp=accumGDD-gddP, doyp=0, gddl=accumGDD-gddL, doyl=0)
-  
-  for(i in 1:nrow(pheno.x)) {
-    temp<-filter(gddDF, year==pheno.x$year[i], hex==pheno.x$hex[i])
-    #Because we don't have DOY0-59 GDD and we have negative gddp and gddl values:
-    day1<-min(pheno.x$DOY[pheno.x$year==pheno.x$year[i] & pheno.x$hex==pheno.x$hex[i] & pheno.x$gddl>0])
-    if(pheno.x$gddl[i]<1) { pheno.x$doyl[i]<- floor(pheno.x$DOY[i]/day1*60)
-    } else {   pheno.x$doyl[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddl[i])[1]] }
-    if(pheno.x$gddp[i]<1) { pheno.x$doyp[i]<- floor(pheno.x$DOY[i]/day1*60)
-    } else { pheno.x$doyp[i]<-temp$DOY[which(temp$accumGDD>pheno.x$gddp[i])[1]] }
-  }
-  
-  return(pheno.x)
-}
-
 # fn to compute lags with backcasted lep data for any hex, year, cat_data combination
 output_lags_backcast <- function(cell, Year, data, ...) {
   cats <- data
@@ -137,6 +98,10 @@ lep_pheno <- read_csv("data/derived_data/simpleton_pheno_pdfs-OutlierDetection.c
 ## Read in CatCount data (weekly phenology at hex cells, sites with at least 6 good weeks)
 
 cc_site_data <- read_csv("data/derived_data/cc_subset_trait_based_pheno.csv")
+
+## Read in backcasted caterpillar curves
+
+backcast_cats <- read_csv("data/derived_data/allCodes_CatCast.csv")
 
 ## CatCount data availability
 
@@ -252,7 +217,8 @@ dev.off()
 hexes <- unique(cc_pheno$cell)
 years <- unique(cc_pheno$Year)
 
-backcast_pheno <- backcast_cats(hexes, years)
+backcast_pheno <- backcast_cats %>%
+  filter(hex %in% hexes, year %in% years, code == "RL")
 
 ## Test lags with CC hexes
 
@@ -304,13 +270,6 @@ ggplot(ex_curves, aes(x = julianweek)) + geom_line(aes(y = mean_fracsurv, col = 
   theme(legend.position = c(0.2, 0.2))
 ggsave("figures/ex_curves_plot.pdf", height = 4, width = 6, units = "in")
 
-## Example R2 plot for one site-year
-
-ggplot(filter(fracsurv_lags, cell == 703, Year == 2019), aes(x = lag, y = r2, group = Year)) + 
-  geom_line(cex = 1) + 
-  labs(x = "Lag (weeks)", y = expression(R^2)) + theme_bw(base_size = 15)
-ggsave("figures/ex_r2_plot.pdf", height = 4, width = 6, units = "in")
-
 ## Mean fraction of surveys R2 results
 
 fracsurv_lags <- cc_cat_lags %>%
@@ -320,6 +279,13 @@ fracsurv_lags <- cc_cat_lags %>%
 ggplot(fracsurv_lags, aes(x = lag, y = r2, col = as.factor(Year), group = Year)) + geom_line() + facet_wrap(~cell) +
   labs(x = "Lag (weeks)", y = expression(R^2), col = "Year") + theme_bw(base_size = 15)
 ggsave("figures/cc_catcast_fracsurv_lags.pdf", height = 8, width = 12, units = "in")
+
+## Example R2 plot for one site-year
+
+ggplot(filter(fracsurv_lags, cell == 703, Year == 2019), aes(x = lag, y = r2, group = Year)) + 
+  geom_line(cex = 1) + 
+  labs(x = "Lag (weeks)", y = expression(R^2)) + theme_bw(base_size = 15)
+ggsave("figures/ex_r2_plot.pdf", height = 4, width = 6, units = "in")
 
 ## Hist of best lag
 
@@ -406,6 +372,7 @@ stretch_lag_r2 <- function(cell, Year, data, ...) {
         leps$stretch <- round(leps$lag_x*s)
         
         leps_wk <- leps %>%
+          filter(!is.na(doyl)) %>%
           mutate(julianweek = map_dbl(stretch, ~{
             wk <- cc_wks[. - cc_wks < 7 & . - cc_wks >= 0]
             
@@ -482,14 +449,16 @@ lep_join <- lep_pheno %>%
   filter(!grepl("\\.", x))
 
 pheno_centroids <- backcast_pheno %>%
+  filter(code == "RL") %>%
   left_join(cc_pheno, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
   group_by(hex, year) %>%
   mutate(catcount_centr = sum(doyl*mean_fracsurv, na.rm = T)/sum(mean_fracsurv, na.rm = T),
          catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T),
-         catcast_10 = min(doyl[pdf >= 0.1*max(pdf, na.rm = T)])) %>%
+         catcast_10 = min(doyl[pdf >= 0.1*max(pdf, na.rm = T)], na.rm = T),
+         catcast_50 = min(doyl[pdf >= 0.5*max(pdf, na.rm = T)], na.rm = T)) %>%
   right_join(lep_join, by = c("year", "code", "doyl" = "x", "hex" = "HEXcell")) %>%
   mutate(adult_peak = mean(doyl[y == max(y, na.rm = T)]),
-         adult_10 = min(doyl[y >= 0.1*max(y, na.rm = T)]))
+         adult_10 = min(doyl[y >= 0.1*max(y, na.rm = T)], na.rm = T))
 
 ## Plot phenocurves for catcast
 
@@ -503,7 +472,8 @@ for(c in unique(pheno_centroids$hex)) {
   plot <- ggplot(plot_df, aes(x = doyl)) + 
     geom_smooth(aes(y = pdf, col = "Larvae"), se = F) +
     geom_line(aes(y = y, col = "Adults")) + 
-    geom_vline(aes(xintercept = catcast_centr, col = "Larvae"), lty = 2) +
+    geom_vline(aes(xintercept = catcast_10, col = "Larvae"), lty = 1) +
+    geom_vline(aes(xintercept = catcast_50, col = "50"), lty = 2) +
     facet_wrap(~year) +
     labs(x = "Day of year", y = "PDF", col = "Life stage",
          title = paste0("Hex cell ", c)) + theme_bw(base_size = 15)
@@ -517,20 +487,24 @@ dev.off()
 ## Calculate deviations and z-scores
 
 pheno_dev <- pheno_centroids %>%
-  distinct(year, hex, catcount_centr, catcast_centr, catcast_10) %>%
+  distinct(year, hex, catcount_centr, catcast_centr, catcast_10, catcast_50) %>%
   group_by(hex) %>%
   mutate(mean_catcast_centr = mean(catcast_centr, na.rm = T),
          mean_catcount_centr = mean(catcount_centr, na.rm = T),
          mean_catcast_10 = mean(catcast_10, na.rm = T),
+         mean_catcast_50 = mean(catcast_50, na.rm = T),
          sd_catcast_10 = sd(catcast_10, na.rm = T),
+         sd_catcast_50 = sd(catcast_50, na.rm = T),
          sd_catcount_centr = sd(catcount_centr, na.rm = T),
          sd_catcast_centr = sd(catcast_centr, na.rm = T),
          catcast_dev = catcast_centr - mean_catcast_centr,
          catcount_dev = catcount_centr - mean_catcount_centr,
          catcast10_dev = catcast_10 - mean_catcast_10,
+         catcast50_dev = catcast_50 - mean_catcast_50,
          catcast_z = catcast_dev/sd_catcast_centr,
          catcount_z = catcount_dev/sd_catcount_centr,
-         catcast10_z = catcast10_dev/sd_catcast_10) %>%
+         catcast10_z = catcast10_dev/sd_catcast_10,
+         catcast50_z = catcast50_dev/sd_catcast_50) %>%
   filter(catcount_dev != 0)
 
 r_dev <- cor(pheno_dev$catcast_dev, pheno_dev$catcount_dev, use = "pairwise.complete.obs")
@@ -538,6 +512,11 @@ r_dev <- cor(pheno_dev$catcast_dev, pheno_dev$catcount_dev, use = "pairwise.comp
 r_z <- cor(pheno_dev$catcast_z, pheno_dev$catcount_z, use = "pairwise.complete.obs")
 
 r_10 <- cor(pheno_dev$catcast10_z, pheno_dev$catcount_z, use = "pairwise.complete.obs")
+
+r_50_dev <- cor(pheno_dev$catcast50_dev, pheno_dev$catcount_dev, use = "pairwise.complete.obs")
+
+r_50_z <- cor(pheno_dev$catcast50_z, pheno_dev$catcount_z, use = "pairwise.complete.obs")
+
 
 # plot correlation of deviations
 ggplot(pheno_dev, aes(x = catcount_dev, y = catcast_dev)) + geom_point() +
@@ -554,12 +533,20 @@ ggplot(pheno_dev, aes(x = catcount_z, y = catcast_z)) + geom_point() +
 ggsave("figures/catcast_catcount_zscores_1to1.pdf")
 
 # plot correlation of z scores with catcast 10
-ggplot(pheno_dev, aes(x = catcount_z, y = catcast10_z, col = as.factor(year), shape = as.factor(hex))) + 
+ggplot(pheno_dev, aes(x = catcount_z, y = catcast50_z, col = as.factor(year), shape = as.factor(hex))) + 
   geom_point(size = 3) +
   geom_abline(intercept = 0, slope = 1, lty = 2) +
-  annotate(geom = "text", x = 1.5, y = -2, label = paste0("r  = ", round(r_10, 2)), size = 6) +
+  annotate(geom = "text", x = 1, y = -2, label = paste0("r  = ", round(r_50_z, 2)), size = 6) +
   labs(x = "z-Caterpillars Count! centroid", y = "z-CatCast 10%", shape = "Hex", color = "Year")
-ggsave("figures/catcast_catcount_zscores_10pct_1to1.pdf", units = "in", height = 6, width = 8)
+ggsave("figures/catcast_catcount_zscores_50pct_1to1.pdf", units = "in", height = 6, width = 8)
+
+# plot correlation of 50% deviance with catcount deviance
+ggplot(pheno_dev, aes(x = catcount_dev, y = catcast50_dev, col = as.factor(year), shape = as.factor(hex))) + 
+  geom_point(size = 3) +
+  geom_abline(intercept = 0, slope = 1, lty = 2) +
+  annotate(geom = "text", x = 6, y = -60, label = paste0("r  = ", round(r_50_dev, 2)), size = 6) +
+  labs(x = "Caterpillars Count! centroid deviance", y = "CatCast 50% deviance", shape = "Hex", color = "Year")
+ggsave("figures/catcast_catcount_dev_50pct_1to1.pdf", units = "in", height = 6, width = 8)
 
 ## Early/late years in catcast and CC sites with temperature 
 
