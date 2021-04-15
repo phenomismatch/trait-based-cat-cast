@@ -450,10 +450,8 @@ lep_join <- lep_pheno %>%
 
 pheno_centroids <- backcast_pheno %>%
   filter(code == "RL") %>%
-  left_join(cc_pheno, by = c("year" = "Year", "hex" = "cell", "doyl" = "julianweek")) %>%
   group_by(hex, year) %>%
-  mutate(catcount_centr = sum(doyl*mean_fracsurv, na.rm = T)/sum(mean_fracsurv, na.rm = T),
-         catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T),
+  mutate(catcast_centr = sum(doyl*pdf, na.rm = T)/sum(pdf, na.rm = T),
          catcast_10 = min(doyl[pdf >= 0.1*max(pdf, na.rm = T)], na.rm = T),
          catcast_50 = min(doyl[pdf >= 0.5*max(pdf, na.rm = T)], na.rm = T)) %>%
   right_join(lep_join, by = c("year", "code", "doyl" = "x", "hex" = "HEXcell")) %>%
@@ -486,26 +484,37 @@ dev.off()
 ## Correlation between early/late years 
 ## Calculate deviations and z-scores
 
+cc_allsite_pheno <- cc_site_data %>%
+  group_by(cell, Year, Name) %>%
+  summarize(catcount_centr = sum(julianweek*fracSurveys)/sum(fracSurveys)) %>%
+  group_by(cell, Name) %>%
+  mutate(mean_catcount_centr = mean(catcount_centr, na.rm = T),
+            sd_catcount_centr = sd(catcount_centr, na.rm = T),
+            catcount_dev = catcount_centr - mean_catcount_centr,
+            catcount_z = catcount_dev/sd_catcount_centr) %>%
+  group_by(cell, Year) %>%
+  summarize(mean_catcount_centr = mean(mean_catcount_centr, na.rm = T),
+            catcount_dev = mean(catcount_dev, na.rm = T),
+            catcount_z = mean(catcount_z, na.rm = T))
+
 pheno_dev <- pheno_centroids %>%
-  distinct(year, hex, catcount_centr, catcast_centr, catcast_10, catcast_50) %>%
+  distinct(year, hex, catcast_centr, catcast_10, catcast_50) %>%
   group_by(hex) %>%
   mutate(mean_catcast_centr = mean(catcast_centr, na.rm = T),
-         mean_catcount_centr = mean(catcount_centr, na.rm = T),
          mean_catcast_10 = mean(catcast_10, na.rm = T),
          mean_catcast_50 = mean(catcast_50, na.rm = T),
          sd_catcast_10 = sd(catcast_10, na.rm = T),
          sd_catcast_50 = sd(catcast_50, na.rm = T),
-         sd_catcount_centr = sd(catcount_centr, na.rm = T),
          sd_catcast_centr = sd(catcast_centr, na.rm = T),
          catcast_dev = catcast_centr - mean_catcast_centr,
-         catcount_dev = catcount_centr - mean_catcount_centr,
          catcast10_dev = catcast_10 - mean_catcast_10,
          catcast50_dev = catcast_50 - mean_catcast_50,
          catcast_z = catcast_dev/sd_catcast_centr,
-         catcount_z = catcount_dev/sd_catcount_centr,
          catcast10_z = catcast10_dev/sd_catcast_10,
          catcast50_z = catcast50_dev/sd_catcast_50) %>%
-  filter(catcount_dev != 0)
+  filter(!is.na(catcast_centr)) %>%
+  left_join(cc_allsite_pheno, by = c("hex" = "cell", "year" = "Year")) %>%
+  filter(!is.na(mean_catcount_centr), catcount_dev != 0)
 
 r_dev <- cor(pheno_dev$catcast_dev, pheno_dev$catcount_dev, use = "pairwise.complete.obs")
 
@@ -536,7 +545,7 @@ ggsave("figures/catcast_catcount_zscores_1to1.pdf")
 ggplot(pheno_dev, aes(x = catcount_z, y = catcast50_z, col = as.factor(year), shape = as.factor(hex))) + 
   geom_point(size = 3) +
   geom_abline(intercept = 0, slope = 1, lty = 2) +
-  annotate(geom = "text", x = 1, y = -2, label = paste0("r  = ", round(r_50_z, 2)), size = 6) +
+  annotate(geom = "text", x = 0.5, y = -2, label = paste0("r  = ", round(r_50_z, 2)), size = 6) +
   labs(x = "z-Caterpillars Count! centroid", y = "z-CatCast 10%", shape = "Hex", color = "Year")
 ggsave("figures/catcast_catcount_zscores_50pct_1to1.pdf", units = "in", height = 6, width = 8)
 
@@ -554,17 +563,19 @@ hex_temps <- read.csv("data/derived_data/hex_mean_temps.csv", stringsAsFactors =
 
 pheno_temps <- pheno_centroids %>%
   ungroup() %>%
-  distinct(year, hex, code, catcount_centr, catcast_centr, catcast_10, adult_peak, adult_10) %>%
-  filter(!is.na(catcount_centr)) %>%
+  distinct(year, hex, code, catcast_centr, catcast_10, adult_peak, adult_10) %>%
+  left_join(cc_allsite_pheno, by = c("hex" = "cell", "year" = "Year")) %>%
+  filter(!is.na(mean_catcount_centr), !is.na(catcast_centr)) %>%
+  select(-catcount_dev, -catcount_z) %>%
   left_join(hex_temps, by = c("hex" = "cell", "year")) %>%
-  pivot_longer(names_to = "data", values_to = "pheno", catcount_centr:adult_10) %>%
+  pivot_longer(names_to = "data", values_to = "pheno", catcast_centr:mean_catcount_centr) %>%
   mutate(plot_labels = case_when(data == "catcast_centr" ~ "CatCast",
-                                 data == "catcount_centr" ~ "CatCount",
+                                 data == "mean_catcount_centr" ~ "CatCount",
                                  data == "catcast_10" ~ "CatCast 10%",
                                  data == "adult_peak" ~ "Adult max",
                                  data == "adult_10" ~ "Adult 10%"))
 
-catcount_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "catcount_centr")))
+catcount_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "mean_catcount_centr")))
 
 catcast_mod <- summary(lm(pheno ~ mean_temp, data = filter(pheno_temps, data == "catcast_centr")))
 
@@ -580,19 +591,19 @@ cols <- scales::hue_pal()(5)
 ggplot(pheno_temps, aes(x = mean_temp, y = pheno, col = plot_labels)) + 
   geom_point(size = 2, alpha = 0.5) + 
   geom_smooth(method = "lm", se = F) +
-  annotate(geom = "text", x = 9, y = 49, 
+  annotate(geom = "text", x = 8.5, y = 0, 
            label = paste0("p = ", round(catcount_mod$coefficients[2,4], 2), "; R2 = ", round(catcount_mod$r.squared, 2)), 
            col = cols[5]) +
-  annotate(geom = "text", x = 9, y = 55, 
+  annotate(geom = "text", x = 8.5, y = 8, 
            label = paste0("p = ", round(catcast10_mod$coefficients[2,4], 2), "; R2 = ", round(catcast10_mod$r.squared, 2)), 
            col = cols[4]) +
-  annotate(geom = "text", x = 9, y = 61, 
+  annotate(geom = "text", x = 8.5, y = 16, 
            label = paste0("p = ", round(catcast_mod$coefficients[2,4], 2), "; R2 = ", round(catcast_mod$r.squared, 2)), 
            col = cols[3]) +
-  annotate(geom = "text", x = 9, y = 67, 
+  annotate(geom = "text", x = 8.5, y = 24, 
            label = paste0("p = ", round(adult_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
            col = cols[2]) +
-  annotate(geom = "text", x = 9, y = 74, 
+  annotate(geom = "text", x = 8.5, y = 32, 
            label = paste0("Slope p = ", round(adult10_mod$coefficients[2,4], 2), "; R2 = ", round(adult_mod$r.squared, 2)), 
            col = cols[1]) +
   labs(x = "Avg spring temperature (March-June)", y = "Peak/centroid date", col = "")
