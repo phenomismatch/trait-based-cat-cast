@@ -136,8 +136,75 @@ ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width 
 
 ## Forest only subset
 
+for_inat_cats <- read_csv("data/derived_data/ForestOnly_caterpillar_inat_phenometrics_phenesse.csv")
+
+for_inat_cats_dev <- for_inat_cats %>%
+  group_by(HEXcell, code) %>%
+  mutate(mean10 = mean(w10, na.rm = T),
+         mean50 = mean(w50, na.rm = T),
+         dev10 = w10 - mean10,
+         dev50 = w50 - mean50)
+
+for_adult_bfly <- read_csv("data/derived_data/ForestOnly_adult_bfly_phenometrics_phenesse.csv")
+
+for_adult_bfly_dev <- for_adult_bfly %>%
+  group_by(HEXcell, code) %>%
+  mutate(mean10 = mean(w10, na.rm = T),
+         mean50 = mean(w50, na.rm = T),
+         dev10 = w10 - mean10,
+         dev50 = w50 - mean50)
+
+for_quant_dev <- cc_dev %>%
+  left_join(select(for_adult_bfly_dev, year, HEXcell, code, dev10, dev50), by = c("Year" = "year", "cell" = "HEXcell"), suffix = c("_cc", "_adult")) %>%
+  left_join(select(for_inat_cats_dev, year, HEXcell, code, dev10, dev50), by = c("Year" = "year", "cell" = "HEXcell", "code"))
+
+for_inat_bfly_dev <- select(for_adult_bfly_dev, year, HEXcell, code, dev10, dev50) %>%
+  left_join(for_inat_cats_dev, by = c("year", "HEXcell", "code"), suffix = c("_bfly", "_inat"))
+
 # 10%
+for_inat_cc10 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(x = dev10_cc, y = dev10, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  labs(x = "Deviance 10% Caterpillars Count!", y = "Deviance 10% iNaturalist caterpillars", col = "Overwinter") +
+  theme(legend.position = c(0.85, 0.2))
+
+for_inat_adult10 <- ggplot(filter(for_inat_bfly_dev, !is.na(code)), aes(x = dev10_bfly, y = dev10_inat, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  xlim(-25,50)+
+  labs(x = "Deviance 10% Adult butterflies", y = "Deviance 10% iNaturalist caterpillars") +
+  theme(legend.position = "none")
+
+for_cc_adult10 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(y = dev10_adult, x = dev10_cc, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  labs(y = "Deviance 10% Adult butterflies", x = "Deviance 10% Caterpillars Count!") +
+  theme(legend.position = "none")
+
+plot_grid(for_inat_cc10, for_inat_adult10, for_cc_adult10, ncol = 2, labels = c("Forest only"))
+ggsave("figures/relative_adult_inat_cc_10_forest.pdf", units = "in", height = 8, width = 10)
 
 # 50%
+for_inat_cc50 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(x = dev50_cc, y = dev50, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  labs(x = "Deviance 50% Caterpillars Count!", y = "Deviance 50% iNaturalist caterpillars", col = "Overwinter") +
+  theme(legend.position = c(0.85, 0.15), legend.background = element_rect(fill = "transparent"))
+
+for_inat_adult50 <- ggplot(filter(for_inat_bfly_dev, !is.na(code)), aes(x = dev50_bfly, y = dev50_inat, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  xlim(-20, 30) +
+  labs(x = "Deviance 50% Adult butterflies", y = "Deviance 50% iNaturalist caterpillars") +
+  theme(legend.position = "none")
+
+for_cc_adult50 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(y = dev50_adult, x = dev50_cc, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  labs(y = "Deviance 50% Adult butterflies", x = "Deviance 50% Caterpillars Count!") +
+  theme(legend.position = "none")
+
+plot_grid(for_inat_cc50, for_inat_adult50, for_cc_adult50, ncol = 2)
+ggsave("figures/relative_adult_inat_cc_50_forest.pdf", units = "in", height = 8, width = 10)
 
 ### Absolute comparisons: lag predicted by GDD and time
