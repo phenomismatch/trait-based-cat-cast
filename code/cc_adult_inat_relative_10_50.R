@@ -53,7 +53,7 @@ good_sites <- cc_pheno_unnest %>%
 inat_cats <- read_csv("data/derived_data/caterpillar_inat_phenometrics_phenesse.csv")
 
 inat_cats_dev <- inat_cats %>%
-  group_by(HEXcell) %>%
+  group_by(HEXcell, code) %>%
   mutate(mean10 = mean(w10, na.rm = T),
          mean50 = mean(w50, na.rm = T),
          dev10 = w10 - mean10,
@@ -62,7 +62,7 @@ inat_cats_dev <- inat_cats %>%
 adult_bfly <- read_csv("data/derived_data/adult_bfly_phenometrics_phenesse.csv")
 
 adult_bfly_dev <- adult_bfly %>%
-  group_by(HEXcell) %>%
+  group_by(HEXcell, code) %>%
   mutate(mean10 = mean(w10, na.rm = T),
          mean50 = mean(w50, na.rm = T),
          dev10 = w10 - mean10,
@@ -116,7 +116,7 @@ inat_cc50 <- ggplot(filter(quant_dev, !is.na(code)), aes(x = dev50_cc, y = dev50
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
   labs(x = "Deviance 50% Caterpillars Count!", y = "Deviance 50% iNaturalist caterpillars", col = "Overwinter") +
-  theme(legend.position = c(0.85, 0.35), legend.background = element_rect(fill = "transparent"))
+  theme(legend.position = c(0.85, 0.15), legend.background = element_rect(fill = "transparent"))
 
 inat_adult50 <- ggplot(filter(inat_bfly_dev, !is.na(code)), aes(x = dev50_bfly, y = dev50_inat, col = code)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
@@ -133,5 +133,11 @@ cc_adult50 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev50_adult, x = d
 
 plot_grid(inat_cc50, inat_adult50, cc_adult50, ncol = 2)
 ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width = 10)
+
+## Forest only subset
+
+# 10%
+
+# 50%
 
 ### Absolute comparisons: lag predicted by GDD and time
