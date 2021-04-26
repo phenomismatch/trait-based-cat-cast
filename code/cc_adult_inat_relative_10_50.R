@@ -39,6 +39,61 @@ cc_pheno <- cc_pres_only %>%
 
 cc_pheno_unnest <- read_csv("data/derived_data/cc_weibull_10_50.csv")
 
+## Visualize CC Weibull fits
+
+# phenesse::create_predict_df
+create_predict_df <- function(observations){
+  # previous create_cdf_ends()
+  weib <- fitdistrplus::fitdist(observations, distr = "weibull",
+                                method = "mle")
+  cdf0 <- as.numeric(weib$estimate['scale']*
+                       (-log(1-0.01))^(1/weib$estimate['shape']))
+  cdf100 <- as.numeric(weib$estimate['scale']*
+                         (-log(1-0.99))^(1/weib$estimate['shape']))
+  added_vec <- sort(append(observations, values = c(cdf0, cdf100)),
+                    decreasing = FALSE)
+  
+  new_vec <- seq(from = min(added_vec), to = max(added_vec), by = 0.5)
+  
+  cdfadded <- 1 - exp(-(new_vec/weib$estimate['scale'])^weib$estimate['shape'])
+  
+  cdf_df <- data.frame(x = new_vec, y = cdfadded)
+  ends <- data.frame(x = c(min(added_vec - 1), max(added_vec + 1)),
+                     y = c(-0.001,1.001))
+  cdf_df <- rbind(cdf_df, ends)
+  cdf_df <- cdf_df[order(cdf_df$x, decreasing = FALSE),]
+  
+  return(cdf_df)
+}
+
+cc_weibull <- cc_pheno %>%
+  mutate(cdf = map(pres_dates, ~create_predict_df(.)))
+
+pdf("figures/cc_weibull_cdf.pdf", height = 8, width = 10)
+for(n in unique(cc_weibull$Name)) {
+  df <- cc_weibull %>%
+    filter(Name == n) %>%
+    select(-data)
+  
+  cdfs <- df %>%
+    select(-pres_dates) %>%
+    unnest(cols = c("cdf"))
+  
+  pts <- df %>%
+    select(-cdf) %>%
+    unnest(cols = c("pres_dates"))
+  
+  p <- ggplot(cdfs, aes(x = x, y = y)) + geom_line() + facet_wrap(~Year) +
+    geom_vline(aes(xintercept = cc_10, col = "10%"), lty = 2) +
+    geom_vline(aes(xintercept = cc_50, col = "50%"), lty = 2) +    
+    geom_point(data = pts, aes(x = pres_dates, y = 0), alpha = 0.1) +
+    labs(title = n, x = "Day of year", y = "CDF", col = "Percentile")
+
+  print(p)
+  
+}
+dev.off()
+
 ### Deviations in 10% and 50% phenometrics
 ## Use only sites within hex with >= 2 years, make sure in cells w/ multiple years, not flickering betw sites
 
@@ -206,5 +261,36 @@ for_cc_adult50 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(y = dev50_adul
 
 plot_grid(for_inat_cc50, for_inat_adult50, for_cc_adult50, ncol = 2)
 ggsave("figures/relative_adult_inat_cc_50_forest.pdf", units = "in", height = 8, width = 10)
+
+## iNat only data for adults
+
+adult_bfly_inat <- read_csv("data/derived_data/iNatONLY_adult_bfly_phenometrics_phenesse.csv")
+
+adult_inat_dev <- adult_bfly_inat %>%
+  group_by(HEXcell, code) %>%
+  mutate(mean10 = mean(w10, na.rm = T),
+         mean50 = mean(w50, na.rm = T),
+         dev10 = w10 - mean10,
+         dev50 = w50 - mean50)
+
+inat_only_bfly_dev <- select(adult_inat_dev, year, HEXcell, code, dev10, dev50) %>%
+  left_join(inat_cats_dev, by = c("year", "HEXcell", "code"), suffix = c("_bfly", "_inat"))
+
+inat_only_10 <- ggplot(filter(inat_only_bfly_dev, !is.na(code)), aes(x = dev10_bfly, y = dev10_inat, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  xlim(-25, 25) +
+  labs(x = "Deviance 10% Adult butterflies", y = "Deviance 10% iNaturalist caterpillars") +
+  theme(legend.position = "none")
+
+inat_only_50 <- ggplot(filter(inat_only_bfly_dev, !is.na(code)), aes(x = dev50_bfly, y = dev50_inat, col = code)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_smooth(method = "lm", se = F) +
+  xlim(-20, 20) +
+  labs(x = "Deviance 50% Adult butterflies", y = "Deviance 50% iNaturalist caterpillars", col = "Overwinter") +
+  theme(legend.position = c(0.85, 0.15))
+
+plot_grid(inat_only_10, inat_only_50)
+ggsave("figures/relative_10_50_inat_only_.pdf", units = "in", height = 5, width = 10)
 
 ### Absolute comparisons: lag predicted by GDD and time
