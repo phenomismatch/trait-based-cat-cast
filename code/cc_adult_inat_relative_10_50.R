@@ -67,7 +67,16 @@ create_predict_df <- function(observations){
 }
 
 cc_weibull <- cc_pheno %>%
-  mutate(cdf = map(pres_dates, ~create_predict_df(.)))
+  mutate(cdf = map(pres_dates, ~create_predict_df(.)),
+         pdf = map(cdf, ~{
+           df <- .
+           
+           n <- nrow(df)
+           
+           res <- data.frame(x = df$x[1:(n-1)], y = diff(df$y)/diff(df$x))
+           
+           res[2:(n-2), ]
+         }))
 
 pdf("figures/cc_weibull_cdf.pdf", height = 8, width = 10)
 for(n in unique(cc_weibull$Name)) {
@@ -93,6 +102,32 @@ for(n in unique(cc_weibull$Name)) {
   
 }
 dev.off()
+
+pdf("figures/cc_weibull_pdfs.pdf", height = 8, width = 10)
+for(n in unique(cc_weibull$Name)) {
+  df <- cc_weibull %>%
+    filter(Name == n) %>%
+    select(-cdf)
+  
+  pdfs <- df %>%
+    select(-pres_dates) %>%
+    unnest(cols = c("pdf"))
+  
+  pts <- df %>%
+    select(-pdf) %>%
+    unnest(cols = c("data"))
+  
+  p <- ggplot(pdfs, aes(x = x, y = y)) + geom_line() + facet_wrap(~Year) +
+    geom_vline(aes(xintercept = cc_10, col = "10%"), lty = 2) +
+    geom_vline(aes(xintercept = cc_50, col = "50%"), lty = 2) +    
+    geom_line(data = pts, aes(x = julianweek, y = fracSurveys/1000), col = "darkgray") +
+    labs(title = n, x = "Day of year", y = "PDF", col = "Percentile")
+  
+  print(p)
+  
+}
+dev.off()
+
 
 ### Deviations in 10% and 50% phenometrics
 ## Use only sites within hex with >= 2 years, make sure in cells w/ multiple years, not flickering betw sites
