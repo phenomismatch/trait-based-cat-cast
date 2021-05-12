@@ -1,0 +1,778 @@
+"","CountID","CountName","State","Country","Lat","Lng","cell"
+"1",2,"ACAS, MD.","MD","USA",39.4234,-77.1931,648
+"2",4,"Adams County Preserves, OH.","OH","USA",38.74,-83.44,647
+"3",7,"Airlie Center, VA.","VA","USA",38.7566,-77.7943,676
+"4",8,"Akron, OH.","OH","USA",41.0605,-81.5637,620
+"5",9,"Albert, NB, Canada.","NB","CND",45.68,-64.73,739
+"6",11,"Alexandria, LA.","LA","USA",31.2742,-92.467,698
+"7",12,"Algonquin East, ON, Canada.","ON","CND",45.9833,-77.9,566
+"8",13,"Algonquin Park, ON, Canada.","ON","CND",45.5667,-78.4,593
+"9",14,"Allaire, NJ.","NJ","USA",40.235,-74.19,649
+"10",15,"Allegan, MI.","MI","USA",42.5492,-86.0074,591
+"11",16,"Allegany State Park, NY.","NY","USA",42.1,-78.72,621
+"12",18,"Alva, FL.","FL","USA",26.7153,-81.6726,3727
+"13",19,"Ames, IA.","IA","USA",42.13,-93.58,589
+"14",20,"Amherst, WI.","WI","USA",44.33,-89.42,563
+"15",22,"Andover, MA.","MA","USA",42.65,-71.13,595
+"16",24,"Ann Arbor City, MI.","MI","USA",42.2805,-83.7066,619
+"17",25,"Antioch, NH.","NH","USA",42.95,-72.27,595
+"18",30,"Archer, FL.","FL","USA",29.6667,-82.3392,3672
+"19",33,"Arrowhead Marsh, IN.","IN","USA",41,-85.3,619
+"20",34,"Ashe County, NC.","NC","USA",36.4,-81.45,702
+"21",36,"Asheville, NC.","NC","USA",35.58,-82.6,702
+"22",41,"Atmore, AL.","AL","USA",31.02,-87.5,727
+"23",43,"Aullwood Audubon Center and Farm, OH.","OH","USA",39.8732,-84.2754,646
+"24",47,"Baker Ponds, NH.","NH","USA",43.8898,-71.9685,595
+"25",49,"Bald Eagle State Park, PA.","PA","USA",41.05,-77.75,648
+"26",50,"Bald Mountain Recreation Area, MI.","MI","USA",42.75,-83.21,592
+"27",51,"Baraboo, WI.","WI","USA",43.4891,-89.7387,590
+"28",52,"Barataria, LA.","LA","USA",29.72,-90.12,726
+"29",53,"Barnegat, NJ.","NJ","USA",39.7533,-74.2231,649
+"30",54,"Barnstable #1, MA.","MA","USA",41.68,-70.4,736
+"31",55,"Barnstable #2, MA.","MA","USA",41.62,-70.55,736
+"32",60,"Bear Trap Junction, MN.","MN","USA",46.8833,-92.4833,535
+"33",61,"Beardstown, IL.","IL","USA",39.9484,-90.4278,617
+"34",63,"Beaver Creek Reserve, WI.","WI","USA",44.8134,-91.2701,562
+"35",64,"Beaver Meadow, NY.","NY","USA",42.67,-78.37,621
+"36",65,"Beavercreek Wildlife Area, OH.","OH","USA",39.83,-84.02,646
+"37",67,"Belleplain, NJ.","NJ","USA",39.25,-74.9333,649
+"38",71,"Bentonville, VA.","VA","USA",38.82,-78.33,676
+"39",77,"Big Black Mountain, KY/VA.","KY","USA",37,-83,674
+"40",79,"Big Oaks National Wildlife Refuge, IN.","IN","USA",38.9333,-85.4167,646
+"41",81,"Big Tancook Island, Lunenberg County, NS, Canada.","NS","CND",44.45,-64.17,738
+"42",82,"Binghamton, NY.","NY","USA",42.1167,-75.9,621
+"43",85,"Blackstone Valley Corridor, MA.","MA","USA",42.1243,-71.6117,595
+"44",86,"Blackwater River State Forest, FL.","FL","USA",30.8505,-86.789,3671
+"45",87,"Block Island, RI.","RI","USA",41.17,-71.55,736
+"46",88,"Blowing Rock, NC.","NC","USA",36.07,-81.72,702
+"47",91,"Blue Ridge Mountains, VA.","VA","USA",37.82,-78.88,675
+"48",92,"Blue Ridge Parkway, VA.","VA","USA",37.9609,-79.0326,675
+"49",96,"Bok Tower, FL.","FL","USA",27.8646,-81.6431,3700
+"50",97,"Bond Swamp National Wildlife Refuge, GA.","GA","USA",32.7288,-83.5765,729
+"51",98,"Bong Recreation Area, WI.","WI","USA",42.63,-88.12,590
+"52",99,"Bonnet Carre Spillway, LA.","LA","USA",30,-90.4583,726
+"53",100,"Boone County, IA.","IA","USA",41.97,-93.84,589
+"54",101,"Boone County, IN.","IN","USA",39.95,-86.25,646
+"55",102,"Boone County, MO.","MO","USA",38.88,-92.33,617
+"56",104,"Bouctouche, NB, Canada","NB","CND",46.5,-64.75,739
+"57",105,"Boulder Lake Management Area, MN.","MN","USA",47.0667,-92.1167,535
+"58",107,"Brass Hill, Barrington, NS, Canada.","NS","CND",43.5,-65.5,738
+"59",111,"Brewster, MA.","MA","USA",41.6095,-70.585,736
+"60",111,"Brewster, MA.","MA","USA",41.7833,-70.0167,736
+"61",113,"Bronx/Manhattan Counties, NY.","NY","USA",40.86,-73.9,622
+"62",114,"Brooklyn/Queens Counties, NY.","NY","USA",40.6807,-73.8446,622
+"63",119,"Bruce Peninsula, ON, Canada.","ON","CND",45.17,-81.42,565
+"64",122,"Bryn Mawr, PA.","PA","USA",40.0689,-75.3406,649
+"65",124,"Buffalo Jump Prairie, MO.","MO","USA",37.77,-93.48,644
+"66",125,"Buffalo National River (Erbie), AR.","AR","USA",36.07,-93.22,671
+"67",126,"Bull Creek, FL.","FL","USA",28.0844,-80.9672,3700
+"68",127,"Bullfrog Creek, FL.","FL","USA",27.77,-82.3351,3700
+"69",128,"Burr Oak Woods, MO.","MO","USA",39.08,-94.37,616
+"70",129,"Busch Conservation Area, MO.","MO","USA",38.7051,-90.74,617
+"71",130,"Busch Wildlife Area, MO.","MO","USA",38.67,-90.7,617
+"72",131,"Butterfly Hill, VA.","VA","USA",39.27,-77.63,648
+"73",133,"Caddo Lake, TX.","TX","USA",32.72,-94.15,698
+"74",134,"Caesar Creek Lake, OH.","OH","USA",39.4881,-84.0582,646
+"75",135,"Caledonia, MN.","MN","USA",43.73,-91.58,562
+"76",140,"Calumet County, WI.","WI","USA",44.05,-88.33,563
+"77",141,"Calvert County, MD.","MD","USA",38.61,-76.7,676
+"78",144,"Cambridge (rare Charitable Research Reserve), ON.","ON","CND",43.3817,-80.355,593
+"79",146,"Camel's Hump, VT.","VT","USA",44.43,-72.85,567
+"80",147,"Cameron Parish, LA.","LA","USA",29.75,-93.58,725
+"81",148,"Camillus, NY.","NY","USA",43.07,-76.22,594
+"82",150,"Campbell County, TN.","TN","USA",36.37,-84.25,674
+"83",151,"Canaan Valley, WV.","WV","USA",39.0667,-79.425,648
+"84",152,"Cape May, NJ.","NJ","USA",39.0167,-74.8667,649
+"85",153,"Carden, ON, Canada.","ON","CND",44.6333,-79.05,593
+"86",155,"Carleton Reserve, Sarasota County, FL.","FL","USA",27.13,-82.4,3700
+"87",157,"Carlton County, MN.","MN","USA",46.64,-92.34,535
+"88",159,"Carver Park Reserve, MN.","MN","USA",44.85,-93.6,534
+"89",160,"Cass County, MI.","MI","USA",41.92,-86,591
+"90",161,"Caswell County, NC.","NC","USA",36.35,-78.92,703
+"91",162,"Catoosa-Whitfield, GA.","GA","USA",34.8749,-85.0056,701
+"92",163,"Cedar Rapids, IA.","IA","USA",42,-91.68,589
+"93",166,"Central Bucks County, PA.","PA","USA",40.37,-75.08,649
+"94",169,"Central Park, NY.","NY","USA",40.75,-73.97,622
+"95",171,"Central Queens County, Long Island, NY.","NY","USA",40.7,-73.83,622
+"96",174,"Chadds Ford, PA.","PA","USA",39.87,-75.58,649
+"97",175,"Chagrin River Valley, OH.","OH","USA",41.4784,-81.4382,620
+"98",175,"Chagrin River Valley, OH.","OH","USA",41.4833,-81.4333,620
+"99",177,"Charleston - East, SC.","SC","USA",32.86,-79.88,730
+"100",178,"Charleston - South, SC.","SC","USA",32.72,-80.1,730
+"101",180,"Chautauqua, NY.","NY","USA",42.271,-79.1639,620
+"102",181,"Chelsea, MI.","MI","USA",42.3181,-84.0204,619
+"103",183,"Chichaqua, IA.","IA","USA",41.79,-93.39,589
+"104",186,"Chippewa Nature Center, MI","MI","USA",43.611,-84.4091,591
+"105",186,"Chippewa Nature Center, MI.","MI","USA",43.62,-84.42,591
+"106",187,"Chippokes Plantation State Park, VA.","VA","USA",37.1397,-76.7208,676
+"107",191,"Christmas, FL.","FL","USA",28.5,-81,3700
+"108",193,"Churchill #1, MB, Canada.","MB","CND",59,-94.25,370
+"109",194,"Churchill #2, MB, Canada.","MB","CND",58.75,-94.12,370
+"110",198,"Clatter Valley, New Milford, CT.","CT","USA",41.47,-73.52,622
+"111",199,"Clear Creek Valley, OH.","OH","USA",39.62,-82.68,647
+"112",200,"Clear Creek, ON, Canada","ON","CND",42.5147,-81.7729,620
+"113",202,"Cleveland Heights-Holden Arboretum, OH.","OH","USA",41.69,-81.36,620
+"114",203,"Clinton, MS.","MS","USA",32.33,-90.32,699
+"115",205,"Codorus State Park, PA.","PA","USA",39.78,-76.92,649
+"116",207,"Colchester, VT.","VT","USA",44.53,-73.17,567
+"117",214,"Concord, MA.","MA","USA",42.4333,-71.4167,595
+"118",215,"Congaree Swamp, SC.","SC","USA",33.77,-80.75,730
+"119",217,"Conway, SC.","SC","USA",33.82,-79,730
+"120",218,"Cook County, MN. #1","MN","USA",47.87,-90.28,535
+"121",219,"Cook County, MN. #2","MN","USA",47.78,-93.53,507
+"122",220,"Coral Gables, FL.","FL","USA",25.7051,-80.269,3727
+"123",221,"Corkscrew Swamp Sanctuary, FL.","FL","USA",26.3666,-81.5217,3727
+"124",221,"Corkscrew Swamp Sanctuary, FL.","FL","USA",26.3667,-81.5167,3727
+"125",222,"Cornucopia, WI.","WI","USA",46.8037,-91.0932,535
+"126",231,"Crex Meadows, WI.","WI","USA",45.8455,-92.6062,534
+"127",232,"Croatan National Forest, NC.","NC","USA",34.87,-76.98,733
+"128",233,"Crown Colony, TN.","TN","USA",36.58,-82.38,674
+"129",234,"Cuivre River State Park, MO.","MO","USA",39.08,-90.98,617
+"130",236,"Cumberland, RI.","RI","USA",41.98,-71.48,595
+"131",242,"Danby, VT.","VT","USA",43.28,-73,595
+"132",243,"Danby-Tinmouth, VT.","VT","USA",43.35,-73.0833,595
+"133",245,"Danville, VA.","VA","USA",36.59,-79.39,703
+"134",246,"Darby Creek, OH.","OH","USA",39.9,-83.23,647
+"135",248,"Dare County - Mainland, NC.","NC","USA",35.73,-75.87,733
+"136",250,"Davie County, NC.","NC","USA",35.92,-80.52,702
+"137",252,"Davy Crockett National Forest, TX.","TX","USA",31.33,-94.25,698
+"138",253,"Dearborn, MI.","MI","USA",42.32,-83.22,619
+"139",254,"Decatur Co., TN.","TN","USA",35.6278,-88.0338,673
+"140",255,"Deep Portage, MN.","MN","USA",46.8995,-94.3849,534
+"141",256,"Delaware County, IN.","IN","USA",40.2,-85.4,646
+"142",258,"Delaware County, PA.","PA","USA",39.93,-75.35,649
+"143",259,"Delmarva Tip, VA.","VA","USA",37.2024,-75.9576,676
+"144",260,"Delta National Forest, MS.","MS","USA",32.7597,-90.7558,699
+"145",261,"DeSoto National Forest, MS.","MS","USA",30.85,-88.98,727
+"146",262,"Devil's Hammock, FL.","FL","USA",29.3112,-82.6979,3672
+"147",265,"Dismal Swamp, VA.","VA","USA",36.6718,-76.483,676
+"148",266,"Disney Wilderness Preserve, FL.","FL","USA",28.124,-81.4082,3700
+"149",269,"Dubuque, IA.","IA","USA",42.4833,-90.7,590
+"150",271,"Duke Farms, NJ.","NJ","USA",40.6096,-74.6891,649
+"151",272,"Durham, NC.","NC","USA",36.0935,-78.9008,703
+"152",276,"East Glastonbury, CT.","CT","USA",41.6667,-72.5333,622
+"153",277,"East Haddam, CT.","CT","USA",41.48,-72.4,622
+"154",279,"Eastern Fairfield/Western New Haven County, CT.","CT","USA",41.32,-73.2,622
+"155",283,"Eglin Air Force Base, FL.","FL","USA",30.45,-86.55,3671
+"156",287,"El Dorado Springs, MO.","MO","USA",37.75,-94,616
+"157",288,"Eliot Pratt Education Center, CT.","CT","USA",41.5,-73.47,622
+"158",289,"Elizabethton, TN.","TN","USA",36.3626,-82.1324,702
+"159",290,"Elizabethtown, NY.","NY","USA",44.22,-73.6,594
+"160",291,"Elizabethville, PA.","PA","USA",40.57,-76.83,649
+"161",293,"Elliott Key, FL.","FL","USA",25.4161,-80.2043,3727
+"162",295,"Emmet and Cheboygan Counties, MI.","MI","USA",45.4345,-84.7508,564
+"163",296,"Emporium, PA.","PA","USA",41.58,-78.18,621
+"164",298,"Essex County, VT.","VT","USA",44.76,-71.73,567
+"165",300,"Fairfield, IA.","IA","USA",41.02,-91.95,589
+"166",301,"Fairhope, AL.","AL","USA",30.53,-87.83,727
+"167",304,"Falling Waters, FL.","FL","USA",30.7463,-85.5098,728
+"168",305,"Falmouth, MA.","MA","USA",41.6095,-70.585,736
+"169",306,"Farmington Hills, MI.","MI","USA",42.4697,-83.3748,619
+"170",307,"Farmington Valley, CT.","CT","USA",41.8169,-72.8674,622
+"171",309,"Fauquier County, VA.","VA","USA",38.58,-77.75,676
+"172",310,"Ferrisburg, eastern half, VT.","VT","USA",44.22,-73.25,594
+"173",311,"Ferrisburg, VT.","VT","USA",44.22,-73.25,594
+"174",312,"Fields Pond Audubon Center, ME.","ME","USA",44.7384,-68.7277,568
+"175",313,"Fincastle, VA.","VA","USA",37.5122,-79.8806,675
+"176",314,"Finger Lakes National Forest, NY.","NY","USA",42.529,-76.7908,621
+"177",317,"Flamingo, Everglades National Park, FL.","FL","USA",25.1833,-80.85,3727
+"178",318,"Florida Caverns State Park, FL.","FL","USA",30.811,-85.2239,728
+"179",319,"Folsom, LA.","LA","USA",30.63,-90.18,726
+"180",321,"Forman-Kleinpeter, LA.","LA","USA",30.37,-91.03,726
+"181",323,"Fort Belvoir, VA.","VA","USA",38.78,-77.25,676
+"182",331,"Fox River-Seney, MI.","MI","USA",46.35,-85.95,536
+"183",332,"Foxboro, MA.","MA","USA",42.08,-71.25,595
+"184",333,"Francis Marion National Forest, SC.","SC","USA",33.1408,-79.4754,730
+"185",337,"Furnace Hills, PA.","PA","USA",40.2262,-76.3027,649
+"186",338,"Galloway Township, NJ.","NJ","USA",39.485,-74.5605,649
+"187",339,"Galveston Island, TX.","TX","USA",29.27,-94.75,725
+"188",340,"Galveston, TX.","TX","USA",29.33,-94.83,725
+"189",341,"Gaston County, NC.","NC","USA",35.25,-81.13,702
+"190",342,"Geauga Park District, OH.","OH","USA",41.43,-81.02,620
+"191",343,"Gettysburg, PA.","PA","USA",39.83,-77.23,648
+"192",345,"Gilchrist Co., FL.","FL","USA",29.7267,-82.8317,3672
+"193",346,"Giles County, VA.","VA","USA",37.32,-80.63,675
+"194",347,"Gilmanton, WI.","WI","USA",44.4221,-91.6788,562
+"195",352,"Glen Helen Nature Preserve, OH.","OH","USA",39.8,-83.88,647
+"196",353,"Goethe State Forest, FL.","FL","USA",29.0836,-82.6394,3700
+"197",354,"Gogebic County, MI.","MI","USA",46.4167,-90.0333,535
+"198",354,"Gogebic County, MI.","MI","USA",46.42,-90.03,535
+"199",360,"Grand Isle, LA.","LA","USA",29.23,-90,726
+"200",363,"Granville, OH.","OH","USA",40.05,-82.53,647
+"201",365,"Gratiot-Saginaw, MI.","MI","USA",43.2486,-84.409,591
+"202",366,"Great Dismal Swamp, NC-VA.","NC","USA",36.65,-77.5,676
+"203",368,"Great Swamp, NJ.","NJ","USA",40.78,-74.4624,622
+"204",369,"Great Swamp, RI.","RI","USA",41.43,-71.57,736
+"205",370,"Greater Muskegon, MI.","MI","USA",43.2342,-86.1643,591
+"206",371,"Greater Peoria, IL.","IL","USA",40.75,-89.68,617
+"207",372,"Green Bottom, Cabell County, WV.","WV","USA",38.5,-82.18,647
+"208",373,"Green River Wildlife Area, IL.","IL","USA",41.585,-89.5161,590
+"209",374,"Greenbrook Sanctuary, NJ.","NJ","USA",40.9144,-73.9327,622
+"210",375,"Greene County, OH.","OH","USA",39.6,-83.97,646
+"211",376,"Greene County, VA.","VA","USA",38.3,-78.42,676
+"212",377,"Greenwich Audubon Center, CT.","CT","USA",41.07,-73.68,622
+"213",378,"Grindstone Mountain, TN.","TN","USA",35.0833,-85.05,701
+"214",378,"Grindstone Mountain, TN.","TN","USA",35.0834,-85.0586,701
+"215",383,"Haliburton Highlands, ON, Canada.","ON","CND",44.8787,-78.6811,593
+"216",383,"Haliburton Highlands, ON, Canada.","ON","CND",44.8833,-78.6833,593
+"217",384,"Halifax, NS, Canada.","NS","CND",44.7667,-63.7,739
+"218",386,"Halls Mills, NY.","NY","USA",41.8927,-74.5859,622
+"219",387,"Harford County (Churchville), MD.","MD","USA",39.55,-76.23,649
+"220",389,"Harper's Ferry, WV.","WV","USA",39.33,-77.73,648
+"221",390,"Harris Neck National Wildlife Refuge, GA.","GA","USA",31.6833,-81.3,3673
+"222",393,"Hattiesburg, MS.","MS","USA",31.3072,-89.3166,727
+"223",394,"Hawk Mountain, PA.","PA","USA",40.5833,-75.9167,649
+"224",398,"Helderberg, NY.","NY","USA",42.5667,-74.0167,622
+"225",399,"Hendricks, PA.","PA","USA",40.33,-75.47,649
+"226",400,"Henry County, IN.","IN","USA",39.92,-85.35,646
+"227",401,"Herkimer, NY.","NY","USA",43.1167,-74.9817,594
+"228",403,"Hernando County - West, FL.","FL","USA",28.55,-82.57,3700
+"229",404,"High Falls, GA.","GA","USA",33.1787,-84.0179,729
+"230",405,"High Island, TX.","TX","USA",29.55,-94.47,725
+"231",407,"High Springs, FL.","FL","USA",29.8475,-82.5846,3672
+"232",408,"Highlands Hammock, FL.","FL","USA",27.4343,-81.564,3700
+"233",410,"Hillsdale, MI.","MI","USA",41.8544,-84.593,619
+"234",412,"Hiram, ME.","ME","USA",43.92,-70.73,595
+"235",413,"Hobcaw Barony, SC.","SC","USA",33.4312,-79.1645,730
+"236",414,"Hog Island, ON, Canada.","ON","CND",45.842,-76.9158,566
+"237",416,"Homestead #1, FL.","FL","USA",25.42,-80.42,3727
+"238",420,"Horseshoe Lake, IL.","IL","USA",38.695,-90.0915,645
+"239",425,"Huntington, VT.","VT","USA",44.33,-73,567
+"240",426,"Huron County, OH.","OH","USA",41.12,-82.7,619
+"241",427,"Independence Oaks, MI.","MI","USA",42.74,-83.42,592
+"242",428,"Indian Bayou Wildlife Management Area, LA.","LA","USA",30.4066,-91.7088,726
+"243",433,"Inwood Hill Park-Manhattan #1, New York, NY.","NY","USA",40.87,-73.92,622
+"244",434,"Inwood Hill Park-Manhattan #2, New York, NY.","NY","USA",40.77,-73.97,622
+"245",435,"Iowa City, IA.","IA","USA",41.7522,-91.6076,589
+"246",437,"Islamorada, FL.","FL","USA",24.9518,-80.5889,3727
+"247",438,"Island Ford, VA.","VA","USA",38.3519,-78.6899,676
+"248",439,"Islesboro, Waldo County, ME.","ME","USA",44.35,-68.9,568
+"249",441,"Ithaca, NY.","NY","USA",42.52,-76.55,621
+"250",443,"Jamaica Bay Wildlife Refuge, NY.","NY","USA",40.62,-73.83,622
+"251",446,"Jefferson County Glades, MO.","MO","USA",38.2,-90.53,645
+"252",447,"Jefferson County, WV.","WV","USA",39.22,-77.83,648
+"253",448,"Johnson County, IA.","IA","USA",41.67,-91.53,589
+"254",449,"Johnson County, IN.","IN","USA",39.48,-86.07,646
+"255",451,"Judson College, AL.","AL","USA",32.83,-87.17,728
+"256",454,"Kalamazoo Nature Center, MI.","MI","USA",42.35,-85.45,591
+"257",455,"Kanata, ON, Canada.","ON","CND",45.35,-75.92,566
+"258",460,"Kennedy-Dells Park, NY.","NY","USA",41.17,-74,622
+"259",461,"Kenosha, WI.","WI","USA",42.62,-87.87,591
+"260",462,"Kent County, RI.","RI","USA",41.87,-71.52,595
+"261",466,"Key Largo, FL.","FL","USA",25.1761,-80.3696,3727
+"262",469,"Killarney Provincial Park, ON, Canada.","ON","CND",46.0139,-81.4046,565
+"263",470,"Killbuck Marsh State Wildlife Area, OH.","OH","USA",40.71,-81.953,647
+"264",473,"Kissimmee Prairie Sanctuary, FL.","FL","USA",27.5526,-80.9813,3700
+"265",477,"La Porte County, IN.","IN","USA",41.6167,-86.8252,618
+"266",477,"La Porte County, IN.","IN","USA",41.62,-86.8,618
+"267",482,"Lake Blackshear, GA.","GA","USA",31.964,-83.8869,729
+"268",486,"Lake Dore, ON, Canada.","ON","CND",45.64,-77.08,566
+"269",487,"Lake Louisa State Park, FL.","FL","USA",28.4997,-81.7187,3700
+"270",488,"Lake of the Pines, TX.","TX","USA",32.8,-94.6,698
+"271",489,"Lake Placid, NY.","NY","USA",44.25,-73.9833,594
+"272",492,"Lakehurst, NJ.","NJ","USA",40,-74.37,649
+"273",493,"Lakes Regional Park, FL.","FL","USA",26.52,-81.88,3727
+"274",495,"LaPlatte Marsh, VT.","VT","USA",44.39,-73.23,567
+"275",496,"LaSalle County, IL.","IL","USA",41.2,-88.95,618
+"276",497,"Laurentian Divide, MN.","MN","USA",47.5667,-92.5333,507
+"277",499,"Lee County, FL.","FL","USA",26.65,-81.85,3727
+"278",500,"Lehigh Valley Conservancy/Mariton Reserve, PA.","PA","USA",40.6,-75.2,649
+"279",502,"Letchworth State Park, NY.","NY","USA",42.6573,-77.9713,621
+"280",504,"Lexington, KY.","KY","USA",37.92,-84.47,674
+"281",505,"Lexington, VA.","VA","USA",37.848,-79.477,675
+"282",506,"Lima, OH.","OH","USA",40.75,-84.07,619
+"283",510,"Little Buffalo State Park, PA.","PA","USA",40.38,-77.13,648
+"284",511,"Lockett Crossing, GA.","GA","USA",31.58,-84.22,3672
+"285",513,"Long Point, ON, Canada.","ON","CND",42.6167,-80.3833,620
+"286",514,"Long Pond, PA.","PA","USA",41.05,-75.45,621
+"287",515,"Lookout Mountain, GA.","GA","USA",34.8074,-85.3893,701
+"288",515,"Lookout Mountain, GA.","GA","USA",34.8167,-85.4,701
+"289",520,"Louisiana Nature Center, New Orleans, LA.","LA","USA",30.03,-89.95,726
+"290",522,"Lower Bucks County, PA.","PA","USA",42.03,-75,622
+"291",524,"Lower Penobscot, ME.","ME","USA",44.5466,-68.8999,568
+"292",525,"Lower Pioneer Valley, MA.","MA","USA",42.1333,-72.55,622
+"293",528,"Lumber River State Park, NC.","NC","USA",34.8382,-79.3493,703
+"294",529,"MacGregor Point Provincial Park, ON, Canada.","ON","CND",44.3731,-81.4384,592
+"295",531,"Madison, WI.","WI","USA",43.0899,-89.3838,590
+"296",532,"Madison/Old Lyme, CT.","CT","USA",41.28,-72.44,622
+"297",535,"Maidens, VA.","VA","USA",37.6423,-77.9575,676
+"298",537,"Manassas-Bullrun, VA.","VA","USA",38.83,-77.43,676
+"299",538,"Manatee County - East, FL.","FL","USA",27.33,-82.03,3700
+"300",539,"Manatee County - West, FL.","FL","USA",27.5,-82.47,3700
+"301",540,"Manion Corners, ON, Canada.","ON","CND",45.2565,-76.0653,566
+"302",541,"Manitoulin Island, ON, Canada.","ON","CND",45.8333,-82.75,564
+"303",544,"Marion County, IL.","IL","USA",38.77,-88.82,645
+"304",546,"Mariton Wildlife Sanctuary, PA.","PA","USA",40.6093,-75.2044,649
+"305",548,"Marple, PA.","PA","USA",39.95,-75.38,649
+"306",549,"Martha LaFite Thompson Nature Sanctuary, MO.","MO","USA",39.32,-94.3133,616
+"307",550,"Martha's Vineyard, MA.","MA","USA",41.3667,-70.6333,736
+"308",552,"Mary Gray Bird Sanctuary, IN.","IN","USA",39.5765,-85.2072,646
+"309",556,"McCormick's Creek State Park, IN.","IN","USA",39.28,-86.7,646
+"310",558,"McGraw Wildlife Foundation, IL.","IL","USA",42.07,-88.13,590
+"311",559,"McNair, MN.","MN","USA",47.32,-91.6717,535
+"312",560,"Medford, WI.","WI","USA",45.25,-90.27,535
+"313",563,"Meeman-Shelby Forest, TN,","TN","USA",35.3439,-90.0327,672
+"314",563,"Meeman-Shelby Forest, TN,","TN","USA",35.35,-90.0167,672
+"315",564,"Mercer, NJ.","NJ","USA",40.2694,-74.7663,649
+"316",565,"Meriden, CT.","CT","USA",41.5243,-72.7448,622
+"317",570,"Metro New Orleans, LA.","LA","USA",29.9416,-90.112,726
+"318",571,"Miami County, OH.","OH","USA",40.17,-84.42,619
+"319",572,"Middleboro, MA.","MA","USA",41.92,-70.97,595
+"320",574,"Milwaukee County (Riverside), WI.","WI","USA",43.13,-88.03,590
+"321",576,"Missisquoi County, QC, Canada.","QC","CND",45.13,-72.8,567
+"322",577,"Mississippi Museum of Natural History, MS.","MS","USA",32.3995,-90.1,699
+"323",578,"Mohawk Dam, OH.","OH","USA",40.4245,-82.0821,647
+"324",580,"Monastery-Panola-Arabia Mountains, GA.","GA","USA",33.6167,-84.0667,729
+"325",580,"Monastery-Panola-Arabia Mountains, GA.","GA","USA",33.6191,-84.0804,729
+"326",581,"Monroe/Brown, IN.","IN","USA",39.094,-86.3277,646
+"327",582,"Monroeville, PA.","PA","USA",40.45,-79.77,648
+"328",583,"Montello, WI.","WI","USA",43.73,-89.4,563
+"329",585,"Montgomery County, VA.","VA","USA",37.17,-80.48,675
+"330",586,"Monticello, NY.","NY","USA",41.5684,-74.6321,622
+"331",587,"Montour Preserve, PA.","PA","USA",41.0632,-76.5479,621
+"332",588,"Moose Lake State Park, MN.","MN","USA",46.4393,-92.7304,534
+"333",591,"Mount Desert Island, ME.","ME","USA",44.33,-68.33,568
+"334",594,"Mount Magazine, AR.","AR","USA",35.17,-93.63,671
+"335",597,"Mount Snow, VT.","VT","USA",42.9682,-72.8946,595
+"336",598,"Mount Washington, Coos County, NH.","NH","USA",44.27,-71.3,595
+"337",599,"Mud Lake, WI.","WI","USA",43.4118,-89.3044,590
+"338",600,"Muriel Shirey Memorial, MN.","MN","USA",46.7767,-92.125,535
+"339",601,"Muscatatuck National Wildlife Refuge, IN.","IN","USA",38.95,-85.8,646
+"340",602,"Muskoka, ON, Canada.","ON","CND",45.0219,-79.6196,593
+"341",603,"Muttontown, NY.","NY","USA",40.853,-73.5352,622
+"342",604,"Mystic/New London, CT.","CT","USA",41.32,-72.08,622
+"343",605,"Nags Head Woods, NC.","NC","USA",35.98,-75.66,733
+"344",606,"Nassawango Creek, MD.","MD","USA",38.229,-75.4714,676
+"345",608,"Neal Smith National Wildlife Refuge, IA.","IA","USA",41.53,-93.27,589
+"346",610,"Neillsville, WI.","WI","USA",44.52,-90.52,562
+"347",611,"Nevis, MN.","MN","USA",46.9495,-94.7646,534
+"348",611,"Nevis, MN.","MN","USA",46.985,-94.8437,534
+"349",612,"New Hope, PA.","PA","USA",40.33,-74.92,649
+"350",613,"New London, CT.","CT","USA",41.3,-72.1,622
+"351",614,"Newaygo County, MI.","MI","USA",43.45,-85.68,591
+"352",615,"Newport (Aquidneck Island), RI.","RI","USA",41.53,-71.27,736
+"353",617,"Nine Mile, WI.","WI","USA",44.92,-89.7,563
+"354",620,"Nixon Park, PA.","PA","USA",39.8854,-76.7322,649
+"355",622,"North Delaware (Wilmington), DE.","DE","USA",39.7153,-75.6416,649
+"356",623,"North Eastham, MA.","MA","USA",41.86,-69.99,736
+"357",626,"North Hero, VT.","VT","USA",44.92,-73.15,567
+"358",627,"North Montpelier, VT.","VT","USA",44.32,-72.47,567
+"359",628,"North Mountain, PA.","PA","USA",41.32,-76.17,621
+"360",629,"North Park Village, IL.","IL","USA",41.98,-87.68,618
+"361",630,"Northampton, MA.","MA","USA",42.3751,-72.6043,622
+"362",632,"Northern Calvert County, MD.","MD","USA",38.6,-76.62,676
+"363",633,"Northern Fairfax County, VA.","VA","USA",38.95,-77.2,676
+"364",634,"Northern Kettle Moraine, WI.","WI","USA",43.665,-88.1603,563
+"365",636,"Northern Shenandoah, VA.","VA","USA",38.85,-78.28,676
+"366",639,"Noxubee National Wildlife Refuge, MS.","MS","USA",33.2783,-88.7929,700
+"367",641,"Ocala National Forest - North, FL.","FL","USA",29.38,-81.75,3700
+"368",642,"Occoquan Bay, VA.","VA","USA",38.6392,-77.2404,676
+"369",644,"Ocoee, TN.","TN","USA",35.1556,-84.5755,701
+"370",645,"Ocracoke, NC.","NC","USA",35.15,-75.88,733
+"371",646,"Ohio River Islands, WV.","WV","USA",39.4,-81.22,647
+"372",647,"Okeechobee, FL.","FL","USA",27.2898,-80.8282,3700
+"373",648,"Okefenokee National Wildlife Refuge, GA.","GA","USA",30.85,-82.02,3673
+"374",650,"Olivet, MI.","MI","USA",42.4628,-84.9286,591
+"375",654,"Orange, TX.","TX","USA",30.07,-93.9,725
+"376",656,"Orillia, ON, Canada.","ON","CND",44.63,-79.38,593
+"377",657,"Osceola National Forest, FL.","FL","USA",30.28,-82.48,3672
+"378",658,"Oshawa, ON, Canada.","ON","CND",44.0181,-78.9258,593
+"379",662,"Outagamie County, WI.","WI","USA",44.47,-88.42,563
+"380",663,"Outer Cape Cod, MA.","MA","USA",41.98,-70.05,736
+"381",665,"Owego, NY.","NY","USA",42.1,-76.2333,621
+"382",666,"Owl's Hill (Nashville), TN.","TN","USA",36.02,-86.87,673
+"383",671,"Palm Harbor, FL.","FL","USA",28.05,-82.7333,3700
+"384",675,"Parc Du Mont Orford, QC, Canada.","QC","CND",45.33,-72.2,567
+"385",677,"Pasco County, FL.","FL","USA",28.33,-82.65,3700
+"386",679,"Patrick County, VA.","VA","USA",36.63,-80.3,675
+"387",680,"Peaks of Otter, VA.","VA","USA",37.4456,-79.61,675
+"388",681,"Pederson's Gardens/Anna-Gene Park, WI.","WI","USA",46.5107,-92.0145,535
+"389",682,"Pee Dee National Wildlife Refuge, NC.","NC","USA",35.092,-80.0727,703
+"390",683,"Pelee Island, ON, Canada.","ON","CND",41.77,-82.68,619
+"391",684,"Petroglyphs, ON, Canada.","ON","CND",44.5881,-78.1566,593
+"392",685,"Pettigrew State Park, NC.","NC","USA",35.83,-76.42,733
+"393",686,"Piedmont/Rum Creek, GA.","GA","USA",33.0937,-83.7471,729
+"394",690,"Pine Log State Forest, FL.","FL","USA",30.4429,-85.874,3671
+"395",691,"Pine Mountain, GA.","GA","USA",32.86,-84.85,729
+"396",693,"Pinery Provincial Park, ON, Canada.","ON","CND",43.2307,-81.8921,592
+"397",693,"Pinery Provincial Park, ON, Canada.","ON","CND",43.2333,-81.9,592
+"398",695,"Pinkham Notch, NH.","NH","USA",44.26,-71.25,595
+"399",700,"Point Au Roche, NY.","NY","USA",44.67,-73.44,567
+"400",701,"Point Pelee, ON, Canada.","ON","CND",42.35,-82.0167,620
+"401",705,"Pool Wildlife Sanctuary (Emmaus), PA.","PA","USA",40.55,-75.51,649
+"402",708,"Portland, ME.","ME","USA",43.62,-70.25,595
+"403",710,"Powdermill Nature Reserve, PA.","PA","USA",40.1602,-79.2718,648
+"404",711,"Powell Gardens, MO.","MO","USA",38.9441,-94.03,616
+"405",711,"Powell Gardens, MO.","MO","USA",39.32,-94.3133,616
+"406",716,"Prudence Island, RI.","RI","USA",41.62,-71.3,736
+"407",721,"Quail Hollow, Hartville, OH.","OH","USA",40.8898,-81.3291,620
+"408",724,"Racoon Point, FL.","FL","USA",25.95,-80.92,3727
+"409",727,"Raritan Canal, NJ.","NJ","USA",40.4297,-74.5557,649
+"410",728,"Rathbun Lake, IA.","IA","USA",40.79,-92.91,589
+"411",732,"Raven Rock State Park, NC.","NC","USA",35.41,-78.82,703
+"412",734,"Red River Gorge, KY.","KY","USA",37.75,-83.68,674
+"413",735,"Red Tail Farm, IN.","IN","USA",39.798,-87.118,618
+"414",736,"Reddish Knob, VA-WV.","VA","USA",38.42,-79.22,675
+"415",737,"Reelfoot Lake, TN.","TN","USA",36.43,-89.37,672
+"416",739,"Reston, VA.","VA","USA",38.953,-77.3372,676
+"417",740,"Retzer Nature Center, WI.","WI","USA",43,-88.3,590
+"418",741,"Rice Center, Charles City County, VA.","VA","USA",37.33,-77.2,676
+"419",742,"Rice County, MN.","MN","USA",44.48,-93.07,562
+"420",745,"Ringtown Valley, PA.","PA","USA",41.48,-77.33,621
+"421",747,"River Bend Nature Center, WI.","WI","USA",42.75,-87.82,591
+"422",748,"Riveredge Nature Center, WI.","WI","USA",43.3959,-87.9793,591
+"423",749,"Riverlands, PA.","PA","USA",41.1023,-76.1369,621
+"424",750,"Riverwoods-Shaw Arboretum, MO.","MO","USA",38.45,-90.65,645
+"425",751,"Riviere Harricana (Abitibi), QC, Canada.","QC","CND",48.37,-78.2,538
+"426",753,"Roanoke, VA.","VA","USA",37.3,-79.93,675
+"427",756,"Rochester, MN.","MN","USA",44.0323,-92.4242,562
+"428",757,"Rochester, NY.","NY","USA",43.0887,-77.4975,621
+"429",760,"Rocky Hill, CT.","CT","USA",41.63,-72.65,622
+"430",762,"Rogue River, MI","MI","USA",43.2629,-85.6113,591
+"431",763,"Roland, GA.","GA","USA",32.8594,-84.4157,729
+"432",764,"Rondeau Provincial Park, ON, Canada.","ON","CND",42.3015,-81.9284,620
+"433",765,"Rookery Bay, FL.","FL","USA",26.03,-81.69,3727
+"434",769,"Roy Larsen Sandylands Sanctuary, TX.","TX","USA",30.354,-94.2954,725
+"435",771,"Sabine National Forest, TX.","TX","USA",31.2833,-93.8167,698
+"436",773,"Saline River Watershed, MI.","MI","USA",42.1,-83.73,619
+"437",774,"Salisbury, CT.","CT","USA",42,-73.4,622
+"438",783,"San Mateo area, FL.","FL","USA",29.56,-81.55,3700
+"439",784,"Sandhill/Seneca, WI.","WI","USA",44.3656,-90.1126,562
+"440",787,"Sandy Creek, PA.","PA","USA",41.3183,-80.036,620
+"441",788,"Sanibel, FL.","FL","USA",26.4333,-82.0833,3727
+"442",798,"Saratoga County Airport, NY.","NY","USA",43.05,-73.87,594
+"443",802,"Schoodic Point, ME.","ME","USA",44.42,-68.1,568
+"444",804,"Sea Rim, TX.","TX","USA",29.73,-93.96,725
+"445",806,"Sedalia, MO.","MO","USA",38.55,-93.25,616
+"446",807,"Sentinel Rock State Park, VT.","VT","USA",44.8286,-71.9481,567
+"447",810,"Seven Ponds Nature Center, MI.","MI","USA",43.0014,-83.2428,592
+"448",811,"Severn Township, ON, Canada.","ON","CND",44.73,-79.57,593
+"449",812,"Sewanee, TN.","TN","USA",35.2043,-85.921,701
+"450",814,"Shark Valley, Everglades National Park, FL.","FL","USA",25.6667,-80.675,3727
+"451",816,"Shawnee Hills, IL.","IL","USA",37.6,-88.58,645
+"452",817,"Shawnee State Park and Forest, OH.","OH","USA",38.7122,-83.1354,647
+"453",818,"Shelby Park and Bottoms (Nashville), TN.","TN","USA",36.11,-86.63,673
+"454",819,"Shenandoah National Park, VA.","VA","USA",38.5915,-78.4583,676
+"455",820,"Shenandoah, VA.","VA","USA",38.48,-78.62,676
+"456",821,"Sherman, CT.","CT","USA",41.85,-73.5,622
+"457",822,"Sherman, CT. (variable)","CT","USA",41.57,-73.5,622
+"458",823,"Shimek State Forest, IA.","IA","USA",40.5884,-91.6866,617
+"459",824,"Shreveport, LA.","LA","USA",32.3692,-93.7138,698
+"460",825,"Sibley State Park, MN.","MN","USA",45.32,-95.03,534
+"461",828,"Singer Lake, OH.","OH","USA",40.85,-81.62,620
+"462",832,"Sister Bay, WI.","WI","USA",45.1783,-87.1047,563
+"463",835,"Snowshoe, WV.","WV","USA",38.4,-79.98,675
+"464",837,"Soddy-Daisy, TN.","TN","USA",35.2933,-85.15,701
+"465",842,"South Lyon Area, MI.","MI","USA",42.5779,-83.6591,619
+"466",843,"South River, ON, Canada.","ON","CND",45.83,-79.42,565
+"467",845,"South Washington County, MN.","MN","USA",44.93,-92.93,562
+"468",846,"Southeast Guilford County, NC.","NC","USA",36.23,-79.57,703
+"469",847,"Southeast Nicolet National Forest, WI.","WI","USA",45.28,-88.47,563
+"470",848,"Southeast Orange County, NY.","NY","USA",41.25,-74.28,622
+"471",849,"Southern Anne Arundel County, MD.","MD","USA",38.82,-76.57,676
+"472",852,"Southern Carbon County, PA.","PA","USA",40.87,-75.78,621
+"473",854,"Southern Kettle Moraine, WI.","WI","USA",42.88,-88.53,590
+"474",855,"Southern Lake Norman, NC.","NC","USA",35.4425,-80.869,702
+"475",857,"Southern Rockingham County, NH.","NH","USA",42.9,-71.12,595
+"476",858,"Southwest Washtenaw, MI.","MI","USA",42.1023,-84.0389,619
+"477",859,"Split Oak/Moss Park, FL.","FL","USA",28.1184,-82.5841,3700
+"478",859,"Split Oak/Moss Park, FL.","FL","USA",28.3482,-81.2321,3700
+"479",862,"Spring Island, SC.","SC","USA",32.34,-80.85,730
+"480",863,"Springbrook, IA.","IA","USA",42.17,-90.47,590
+"481",864,"Springdale, NJ.","NJ","USA",41.0732,-74.8191,622
+"482",866,"Springfield Twp., MI.","MI","USA",42.77,-83.53,592
+"483",867,"Springfield, VT.","VT","USA",43.33,-72.53,595
+"484",868,"Spruce Knob, WV.","WV","USA",38.83,-79.5,675
+"485",870,"St. Joseph County, MI.","MI","USA",41.83,-85.67,619
+"486",871,"St. Petersburg, FL.","FL","USA",27.8136,-82.7286,3700
+"487",872,"St. Tammany Parish, LA.","LA","USA",30.42,-90.42,726
+"488",873,"Staten Island, NY.","NY","USA",40.572,-74.147,622
+"489",874,"Steamburg, NY.","NY","USA",42.1052,-78.8994,620
+"490",875,"Steamburg-Allegany State Park, NY.","NY","USA",42,-78.87,620
+"491",876,"Steuben, ME.","ME","USA",44.55,-67.88,568
+"492",877,"Stevenson, AL.","AL","USA",34.85,-85.8,701
+"493",877,"Stevenson, AL.","AL","USA",34.8541,-85.8231,701
+"494",879,"Stokes County - South-Central, NC.","NC","USA",36.37,-80.18,703
+"495",880,"Stormville, NY.","NY","USA",41.59,-73.7511,622
+"496",881,"Storrs, CT.","CT","USA",41.8,-72.2333,622
+"497",884,"Stroudsburg, PA.","PA","USA",40.9897,-75.2164,621
+"498",888,"Sunderland, ON, Canada.","ON","CND",44.2567,-79.1836,593
+"499",889,"Surry Co., NC.","NC","USA",36.35,-80.5333,702
+"500",890,"Susquehanna County, PA.","PA","USA",41.83,-75.88,621
+"501",891,"Suwannee River, FL.","FL","USA",30.378,-83.1658,3672
+"502",892,"Swamp Poodle, MD.","MD","USA",39.02,-76.77,676
+"503",894,"Taberville, MO.","MO","USA",38.05,-93.98,616
+"504",895,"Tallahassee #1, FL.","FL","USA",30.42,-84.23,3672
+"505",899,"Tampa, FL.","FL","USA",28.05,-82.35,3700
+"506",899,"Tampa, FL.","FL","USA",28.0542,-82.3537,3700
+"507",904,"Tennessee River Gorge, TN.","TN","USA",35.1167,-85.4,701
+"508",904,"Tennessee River Gorge, TN.","TN","USA",35.1244,-85.3904,701
+"509",905,"Terre Haute, IN.","IN","USA",39.47,-87.4,618
+"510",908,"The Red Hills, GA.","GA","USA",30.8,-83.97,3672
+"511",910,"Thistlewaite Wildlife Management Area, LA.","LA","USA",30.6167,-92.05,726
+"512",910,"Thistlewaite Wildlife Management Area, LA.","LA","USA",30.6676,-92.0478,726
+"513",912,"Tivoli Bays, NY.","NY","USA",42.03,-73.92,622
+"514",913,"Tooley Pond, NY.","NY","USA",44.28,-74.97,594
+"515",914,"Toronto (Centre), ON, Canada.","ON","CND",43.6563,-79.4524,593
+"516",915,"Toronto (Toronto Entomologists' Assoc.), ON, Canada.","ON","CND",43.78,-79.25,593
+"517",916,"Torreya, FL.","FL","USA",30.576,-85.0218,3672
+"518",917,"Towner's Woods, OH.","OH","USA",41.112,-81.2717,620
+"519",920,"Trempealeau, WI.","WI","USA",44.0701,-91.4112,562
+"520",922,"Truro, MA.","MA","USA",42.0167,-70.1167,595
+"521",923,"Tryon, NC.","NC","USA",35.22,-82.23,702
+"522",927,"Twinsburg, OH.","OH","USA",41.26,-81.5,620
+"523",928,"Tyrell Park, TX.","TX","USA",29.92,-94.15,725
+"524",931,"Union City, PA.","PA","USA",41.9,-79.78,620
+"525",932,"Upland Hills Farm, MI.","MI","USA",42.83,-83.07,592
+"526",933,"Utica, NY.","NY","USA",43.0828,-75.3263,594
+"527",935,"Val-Des-Monts, QC, Canada.","QC","CND",45.65,-75.72,566
+"528",936,"Vandross Bay, SC.","SC","USA",33.62,-79.33,730
+"529",940,"Viola, TN.","TN","USA",35.58,-85.88,701
+"530",941,"Vischer Ferry, NY.","NY","USA",42.7178,-73.833,594
+"531",942,"Voluntown, CT.","CT","USA",41.58,-71.85,622
+"532",943,"W.J. Janes Memorial Drive, Copeland, FL.","FL","USA",26.05,-81.38,3727
+"533",947,"Walk-in-the-Water, FL.","FL","USA",27.85,-81.3667,3700
+"534",948,"Wallkill River National Wildlife Refuge, NJ.","NJ","USA",41.2007,-74.5643,622
+"535",949,"Warsaw, IL.","IL","USA",40.37,-91.4025,617
+"536",950,"Washington Co., RI.","RI","USA",41.4333,-71.7,622
+"537",952,"Washington, DC.","DC","USA",38.9001,-76.9834,676
+"538",954,"Waterbury, CT.","CT","USA",41.53,-73.1,622
+"539",955,"Waterford, VA.","VA","USA",39.2,-77.65,648
+"540",958,"Wautoma, WI.","WI","USA",44.07,-89.25,563
+"541",959,"Wazee, WI.","WI","USA",44.277,-90.6597,562
+"542",961,"Weeks Bay, AL.","AL","USA",30.42,-87.83,727
+"543",962,"Wehr Nature Center, WI.","WI","USA",42.9304,-87.9791,590
+"544",963,"Wekiva River, FL.","FL","USA",28.7833,-81.3667,3700
+"545",966,"West Milford, NJ.","NJ","USA",41.13,-74.37,622
+"546",968,"West Rutland, VT.","VT","USA",43.5941,-73.0379,595
+"547",969,"West St. Tammany, LA.","LA","USA",30.47,-90.17,726
+"548",972,"Western Long Pine Key, Everglades National Park, FL.","FL","USA",25.4,-80.8167,3727
+"549",975,"Western Suffolk, NY.","NY","USA",40.67,-73.75,622
+"550",978,"Westport/Fairfield, CT.","CT","USA",41.17,-73.32,622
+"551",979,"Weymouth Woods (Southern Pines), NC.","NC","USA",35.08,-79.45,703
+"552",981,"White Clay Creek, PA.","PA","USA",39.7,-75.75,649
+"553",982,"White Memorial Conservation Center, CT.","CT","USA",41.75,-73.25,622
+"554",984,"Whitefish Point, MI.","MI","USA",46.6799,-85.1347,564
+"555",986,"Whitney Point, NY.","NY","USA",42.3333,-75.8833,621
+"556",991,"Wilmington, NC.","NC","USA",34.2667,-77.8833,732
+"557",992,"Wilton Wildlife Park, NY.","NY","USA",43.07,-73.75,594
+"558",993,"Windsor, NY.","NY","USA",42.1,-75.6167,621
+"559",994,"Windsor, ON, Canada.","ON","CND",42.2368,-82.9638,619
+"560",995,"Winnebago County, WI.","WI","USA",44.12,-88.6,563
+"561",997,"Woldumar Nature Center, Lansing, MI.","MI","USA",42.68,-84.62,591
+"562",998,"Wolf Creek, OH.","OH","USA",41.2083,-81.7756,620
+"563",999,"Wolfsville, MD.","MD","USA",39.57,-77.55,648
+"564",1000,"Woodbridge/Bethany, CT.","CT","USA",41.42,-73,622
+"565",1002,"Woodshole, MA.","MA","USA",41.52,-70.67,736
+"566",1003,"Wright Patman Lake, TX.","TX","USA",33.33,-94.17,698
+"567",1004,"Yadkin County, NC.","NC","USA",36.17,-80.55,702
+"568",1005,"Yancey County, NC.","NC","USA",35.9,-82.22,702
+"569",1008,"Yellow River State Forest, IA.","IA","USA",43.1272,-91.2109,562
+"570",1061,"Adams Co.","OH","USA",38.7718,-83.4136,647
+"571",1062,"Albemarle Co.","VA","USA",38.0441,-78.5886,676
+"572",1063,"Allen Acres Natural Area","LA","USA",30.8661,-93.0846,698
+"573",1064,"Allen Co.","IN","USA",41.2167,-85.0833,619
+"574",1065,"Anahuac National Wildlife Refuge","TX","USA",29.595,-94.5155,725
+"575",1066,"Annutteliga Hammock","FL","USA",28.73,-82.452,3700
+"576",1067,"Arthurdale","WV","USA",39.4958,-79.8116,648
+"577",1068,"Ashland Co.","OH","USA",40.7191,-82.3393,647
+"578",1069,"Ashtabula  Co.","OH","USA",41.6433,-80.7806,620
+"579",1070,"Athens","OH","USA",39.4053,-82.1278,647
+"580",1071,"Augusta Co.","VA","USA",38.181,-79.032,675
+"581",1072,"Avoca","WI","USA",43.1829,-90.4267,590
+"582",1073,"Avon Park Air Force Range","FL","USA",27.6167,-81.3333,3700
+"583",1074,"Barnstable","MA","USA",41.7012,-70.2996,736
+"584",1075,"Bath Co.","VA","USA",38,-79.8028,675
+"585",1076,"Bayfield Co. South","WI","USA",46.57,-91.0956,535
+"586",1077,"Bear Island","MN","USA",47.7833,-91.9167,507
+"587",1082,"Big Oak Tree State Park","MO","USA",36.6743,-89.2646,672
+"588",1085,"Boone Co.","IN","USA",39.9971,-86.346,618
+"589",1086,"Bowman's Hill Wildflower Preserve","PA","USA",40.422,-75.0044,649
+"590",1088,"Brevard Co. South","FL","USA",27.8803,-80.5012,3700
+"591",1089,"Bristol Co.","MA","USA",41.6326,-70.9679,736
+"592",1090,"Bristol Co.","RI","USA",41.7167,-71.35,736
+"593",1092,"Broward Co. North","FL","USA",26.2313,-80.157,3727
+"594",1093,"Broward Co. South","FL","USA",26.0634,-80.3135,3727
+"595",1094,"Bruce Peninsula National Park","ON","CND",45.2043,-81.5784,565
+"596",1095,"Buckingham Fountain","IL","USA",41.901,-87.502,618
+"597",1098,"Cajun Prairie","LA","USA",30.5608,-92.4297,726
+"598",1100,"Catahoula Butterfly Garden","LA","USA",31.5119,-92.4697,698
+"599",1101,"Central Berkshire Co.","MA","USA",42.4086,-73.2537,622
+"600",1102,"Central Franklin Co.","MA","USA",42.5795,-72.5097,595
+"601",1104,"Central Savannah River Valley","GA","USA",33.3756,-81.9261,730
+"602",1105,"Central Suffolk Co.","NY","USA",40.8627,-72.7536,622
+"603",1110,"Choctawhatchee Bay Northwest","FL","USA",30.524,-86.4974,3671
+"604",1112,"Citrus Co.","FL","USA",28.9995,-82.3755,3700
+"605",1113,"Clermont Co.","OH","USA",39.0452,-84.0839,646
+"606",1113,"Clermont Co.","OH","USA",39.0755,-84.1427,646
+"607",1114,"Clifton Bend","TN","USA",35.3759,-88.0379,673
+"608",1115,"Coffee Co.","TN","USA",35.4833,-86.1,701
+"609",1117,"Colt Creek","FL","USA",28.3128,-82.0558,3700
+"610",1118,"Compton Co.","QC","CND",45.3333,-71.75,567
+"611",1119,"Congaree","SC","USA",33.7667,-80.75,730
+"612",1120,"Cook Co.","MN","USA",47.8548,-90.3438,535
+"613",1121,"Copenhagen Hills WMA","LA","USA",32.1157,-92.3465,698
+"614",1122,"Crooked Creek","AR","USA",36.2667,-92.6167,644
+"615",1123,"Cumberland Co.","NJ","USA",39.3325,-75.2004,649
+"616",1124,"Davidson Co.","NC","USA",35.799,-80.335,703
+"617",1125,"DeKalb Co.","TN","USA",36,-85.8167,673
+"618",1126,"Delaware Co.","OH","USA",40.3833,-83.05,647
+"619",1127,"Dundee","MI","USA",41.9874,-83.6785,619
+"620",1128,"East Bedford Co.","PA","USA",40.1167,-78.6167,648
+"621",1129,"East Windsor","CT","USA",41.9111,-72.5573,622
+"622",1130,"Eastern Catskills","NY","USA",42.0565,-74.0298,622
+"623",1131,"Eastern Halifax Co.","NC","USA",36.1426,-77.2991,703
+"624",1132,"Elsberry","MO","USA",39.1556,-90.783,617
+"625",1133,"Enchanted Forest Sanctuary &amp; Pine Island","FL","USA",28.4578,-80.742,3700
+"626",1134,"Erie Co.","OH","USA",41.3333,-82.5667,619
+"627",1136,"Faulkner/Pulaski Counties","AR","USA",34.9017,-92.3983,671
+"628",1138,"Flagler Co. Northeast","FL","USA",29.5539,-81.2187,3673
+"629",1140,"Forsyth Co.","NC","USA",36.1369,-80.2936,703
+"630",1141,"Fort Polk","LA","USA",31.0811,-93.0585,698
+"631",1143,"Garret Mountain Reservation &amp; Riflecamp Park","NJ","USA",40.8833,-74.1667,622
+"632",1144,"Genesee Co. Parks","MI","USA",43.106,-83.6174,592
+"633",1146,"Giles Co.","VA","USA",37.3333,-80.8667,675
+"634",1149,"Goose Pond","IN","USA",39.031,-87.2317,646
+"635",1151,"Green Island-Lost Mound","IA","USA",42.1956,-90.3435,590
+"636",1153,"Guana Tolomato National Estuarine Research Reserve","FL","USA",30.0031,-81.3548,3673
+"637",1154,"Harford Co.","MD","USA",39.55,-76.2333,649
+"638",1157,"Hazleton","PA","USA",40.9667,-75.9167,621
+"639",1158,"Headwaters","MI","USA",42.7725,-83.5434,592
+"640",1159,"Heinz NWR at Tinicum","PA","USA",39.8877,-75.2594,649
+"641",1161,"Hernando Co. East","FL","USA",28.1184,-82.5841,3700
+"642",1161,"Hernando Co. East","FL","USA",28.5431,-82.3221,3700
+"643",1162,"Holden Arboretum","OH","USA",41.6868,-81.3592,620
+"644",1163,"Holtwood","PA","USA",39.9094,-76.315,649
+"645",1164,"Homestead","FL","USA",25.4833,-80.5,3727
+"646",1164,"Homestead","FL","USA",25.4916,-80.51,3727
+"647",1165,"Howard Co.","MD","USA",39.2498,-76.9319,649
+"648",1166,"Iredell Co.","NC","USA",35.9167,-80.85,702
+"649",1167,"Jackson","TN","USA",35.5513,-88.7764,672
+"650",1168,"Kalamazoo","MI","USA",42.347,-85.4545,591
+"651",1170,"Kent Co.","RI","USA",41.5833,-71.575,622
+"652",1172,"Kisatchie Longleaf Trail","LA","USA",31.4847,-93.0712,698
+"653",1172,"Kisatchie Longleaf Trail","LA","USA",31.4853,-93.0738,698
+"654",1174,"Knox Co.","ME","USA",44.2151,-69.1946,568
+"655",1176,"Lake Co. East","OH","USA",41.723,-81.0548,620
+"656",1177,"Lake Meyer","IA","USA",43.1688,-91.9039,562
+"657",1178,"Land Between The Lakes South","TN","USA",36.6058,-87.9407,673
+"658",1183,"Lower Altamaha","GA","USA",31.3779,-81.5429,3673
+"659",1184,"Lower East Pearl River","LA","USA",30.387,-89.7372,726
+"660",1185,"Lower Hatchie","TN","USA",35.6525,-89.7774,672
+"661",1187,"Magee-Ottawa","OH","USA",41.6234,-83.2059,619
+"662",1188,"Mainland Dare Co.","NC","USA",35.7427,-75.8587,733
+"663",1191,"Mason Co.","IL","USA",40.1628,-89.9579,617
+"664",1192,"McDonough Co.","IL","USA",40.3683,-90.7719,617
+"665",1193,"Merritt Island National Wildlife Refuge","FL","USA",28.6714,-80.7379,3700
+"666",1194,"Moccasin Wallow","FL","USA",27.5,-82.5667,3700
+"667",1194,"Moccasin Wallow","FL","USA",27.5581,-82.5645,3700
+"668",1195,"Monroe-Carbon","PA","USA",40.8473,-75.5409,649
+"669",1199,"Nashville South","TN","USA",36.0167,-86.8667,673
+"670",1201,"Nelson Co.","VA","USA",37.8167,-78.8833,675
+"671",1201,"Nelson Co.","VA","USA",37.8323,-78.8999,675
+"672",1202,"Newaygo","MI","USA",43.4534,-85.7028,591
+"673",1203,"Newport Co.","RI","USA",41.5167,-71.3,736
+"674",1204,"Noble Co.","IN","USA",41.3961,-85.4246,619
+"675",1205,"North Buncombe Co.","NC","USA",35.6634,-82.6117,702
+"676",1206,"North Essex Co.","MA","USA",42.7052,-70.9091,595
+"677",1207,"Northern Berkshire Co.","MA","USA",42.6279,-73.1254,622
+"678",1208,"Northern Westchester Co.","NY","USA",41.2012,-73.6804,622
+"679",1209,"Northern Worcester Co.","MA","USA",42.4333,-71.8122,595
+"680",1211,"Oak Openings Area","OH","USA",41.5839,-83.8444,619
+"681",1212,"Oldham Co.","KY","USA",38.35,-85.5,646
+"682",1214,"Ottawa Co. - Grand River","MI","USA",43.0243,-85.9317,591
+"683",1215,"Ottawa Co. - Lakeshore","MI","USA",43.8333,-85.9333,591
+"684",1216,"Palestine Neil Pit Wildlife Habitat","IL","USA",39.0216,-87.621,645
+"685",1219,"Palm Beach Co. South","FL","USA",26.4391,-80.1466,3727
+"686",1220,"Pender County","NC","USA",34.4667,-77.7167,732
+"687",1221,"Pinecrest (Tri-Co.)","FL","USA",25.7553,-80.9256,3727
+"688",1223,"PPG Industries, Monroeville Chemicals Center","PA","USA",40.4467,-79.7332,648
+"689",1224,"Prince George's Co.","MD","USA",38.7354,-76.8257,676
+"690",1225,"Providence Co.","RI","USA",41.8667,-71.5167,595
+"691",1226,"Putnam Co. East","TN","USA",36.1333,-85.3167,674
+"692",1227,"Putnam Co. West","TN","USA",36.1545,-85.6583,673
+"693",1228,"Rabun Co.","GA","USA",34.9,-83.3,702
+"694",1229,"Ramsey Co.","MN","USA",45.0903,-93.1667,534
+"695",1232,"Rich Mountain","AR","USA",34.6846,-94.3693,671
+"696",1233,"Richmond","VA","USA",37.5102,-77.4823,676
+"697",1234,"Rick Evans Grandview Prairie WMA","AR","USA",33.1667,-93.9,698
+"698",1234,"Rick Evans Grandview Prairie WMA","AR","USA",33.7889,-93.7676,671
+"699",1235,"Roan Mountain","TN","USA",36.1067,-82.1105,702
+"700",1236,"Rockingham Co.","NC","USA",36.4389,-79.9383,703
+"701",1237,"Rockland Co.","NY","USA",41.132,-74.0531,622
+"702",1241,"Sandhills Game Land","NC","USA",34.8777,-79.6743,703
+"703",1242,"Sandusky Bay","OH","USA",41.4167,-82.9333,619
+"704",1243,"Sandy Hook","NJ","USA",40.425,-74.05,622
+"705",1246,"Sarasota Co. - East","FL","USA",27.25,-82.3333,3700
+"706",1247,"Saratoga Co. Airport, NY.","NY","USA",43.05,-73.8667,594
+"707",1250,"Shaver's Creek Environmental Center","PA","USA",40.6687,-77.9097,648
+"708",1251,"Shaw Nature Reserve","MO","USA",38.4668,-90.8192,644
+"709",1252,"Shiawassee National Wildlife Refuge","MI","USA",43.3579,-83.999,592
+"710",1254,"Skunk's Misery","ON","CND",42.7151,-81.7927,620
+"711",1255,"Sky Meadows State Park/Thompson WMA","VA","USA",39.0153,-77.9638,648
+"712",1258,"Southern Berkshire Co.","MA","USA",42.15,-73.3333,622
+"713",1259,"Southern Bucks Co.","PA","USA",40.1813,-74.9003,649
+"714",1260,"Southern Georgian Bay","ON","CND",44.8173,-79.9835,593
+"715",1261,"Southern New Haven Co.","CT","USA",41.3658,-72.9218,622
+"716",1262,"Southport","NC","USA",33.9597,-77.9861,732
+"717",1264,"Stone Mountain Park","GA","USA",33.7781,-84.2412,729
+"718",1265,"Sweetwater Creek","GA","USA",33.7525,-84.6287,701
+"719",1266,"Tallahassee","FL","USA",30.449,-84.3045,3672
+"720",1267,"Tarpon Springs West","FL","USA",28.1184,-82.5841,3700
+"721",1269,"Trail of Tears State Park","MO","USA",37.405,-89.464,645
+"722",1270,"Transylvania Co.","NC","USA",35.2667,-82.7333,702
+"723",1270,"Transylvania Co.","NC","USA",35.2877,-82.7369,702
+"724",1273,"Wake Co.","NC","USA",35.8563,-78.6599,703
+"725",1274,"Washington","VA","USA",38.6845,-78.1277,676
+"726",1275,"West Anne Arundel Co.","MD","USA",39.0783,-76.6848,649
+"727",1276,"West Redding/Fairfield Co.","CT","USA",41.2958,-73.4489,622
+"728",1277,"Western Garrett Co.","MD","USA",39.4833,-79.4833,648
+"729",1278,"Western Hamilton Co. Parks","OH","USA",39.188,-84.7306,646
+"730",1279,"Western Montgomery Co.","MD","USA",39.1667,-77.3667,648
+"731",1280,"Western Niagara Co.","NY","USA",43.2127,-78.9154,593
+"732",1282,"White Co. East","TN","USA",35.9415,-85.3624,701
+"733",1283,"Williamston","NC","USA",35.8601,-77.0398,733
+"734",1285,"Withlacoochee River","FL","USA",28.1184,-82.5841,3700
+"735",1285,"Withlacoochee River","FL","USA",28.8326,-82.2162,3700
+"736",1292,"Savannah National Wildlife Refuge","GA","USA",32.0842,-81.0667,3673
+"737",1293,"Science North","ON","CND",46.4709,-80.9964,565
+"738",1294,"Stone Road Glade Natural Area","AR","USA",34.0799,-93.904,671
+"739",1295,"Toronto (Toronto Entomologists' Assoc.)","ON","CND",43.7833,-79.25,593
+"740",1296,"Williamsburg, VA","VA","USA",37.3563,-76.7383,676
+"741",1303,"Apalachicola River WEA","FL","USA",29.8283,-85.0015,3671
+"742",1304,"Awenda Provincial Park","ON","CND",44.8173,-79.9835,593
+"743",1306,"Big Bend Wildlife Management Area","FL","USA",29.9956,-83.7759,3672
+"744",1307,"Brooklyn/Queens Counties","NY","USA",40.6807,-73.8446,622
+"745",1312,"Hanging Rock","NC","USA",36.3951,-80.2664,703
+"746",1313,"Northern Oconto Co.","WI","USA",45.2685,-88.4625,563
+"747",1315,"Sullivan Co.","MO","USA",40.3204,-92.8649,589
+"748",1323,"Catahoula NWR","LA","USA",31.5766,-92.0088,698
+"749",1326,"Dismal Swamp State Park","NC","USA",36.4558,-76.4437,733
+"750",1327,"Doughton Park","NC","USA",36.38,-81.16,702
+"751",1328,"Fenelon Falls","ON","CND",44.5667,-78.7167,593
+"752",1341,"Maple Hill","NC","USA",34.605,-77.722,732
+"753",1342,"Meeman-Shelby Forest","TN","USA",35.3439,-90.0327,672
+"754",1342,"Meeman-Shelby Forest","TN","USA",35.35,-90.0167,672
+"755",1343,"Muskoka","ON","CND",45.0219,-79.6196,593
+"756",1345,"Oaky Woods","GA","USA",32.4634,-83.5734,729
+"757",1349,"Plouff Creek","MN","USA",47.802,-90.931,535
+"758",1356,"South Pinellas Co.","FL","USA",27.7121,-82.7149,3700
+"759",1357,"Strawberry Plains Audubon Center","MS","USA",34.8352,-89.4698,672
+"760",1361,"Weymouth Woods","NC","USA",35.0833,-79.45,703
+"761",1362,"Williamsburg, KY","KY","USA",36.7331,-84.1547,674
+"762",1363,"Windsor","ON","CND",42.2368,-82.9638,619
+"763",1364,"Back Bay","VA","USA",36.6479,-76.0159,676
+"764",1365,"Cecil Co.","MD","USA",39.6492,-75.971,649
+"765",1366,"Central Bluegrass Region","KY","USA",37.9821,-84.4411,674
+"766",1367,"Edison &amp; Ford Winter Estates","FL","USA",26.607,-81.9136,3727
+"767",1369,"Gogebic County, MI.","MI","USA",46.4167,-90.0333,535
+"768",1370,"Merrimac Farm","VA","USA",38.724,-77.5019,676
+"769",1371,"Orange Co.","NC","USA",35.9722,-79.1295,703
+"770",1372,"Virginia Beach","VA","USA",36.8743,-76.0396,676
+"771",1375,"Trinity, NF.","NF","CAN",48.367,-53.433,769
+"772",1376,"Western Brunswick Co., NC.","NC","USA",33.967,-78.517,732
+"773",1378,"Grandview","MO","USA",38.8742,-94.44,616
+"774",1379,"Land Between the Lakes North","KY","USA",36.8807,-88.0596,673
+"775",1380,"Milwaukee Northshore","WI","USA",43.1632,-88.0245,590
+"776",1382,"West Cook Lake Road","MN","USA",47.01,-92.2811,535
+"777",1383,"White County","GA","USA",34.6923,-83.7687,701
