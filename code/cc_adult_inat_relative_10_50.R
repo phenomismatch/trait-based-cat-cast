@@ -391,10 +391,10 @@ cc_bfly_diff <- cc_quant %>%
   rename("bfly_gdd_10" = accumGDD) %>%
   left_join(accum_gdd, by = c("Year" = "year", "cell" = "hex_cell", "w50" = "doy")) %>%
   rename("bfly_gdd_50" = accumGDD) %>%
-  mutate(diff_10_days = w10 - mean10,
-         diff_50_days = w50 - mean50,
-         diff_10_gdd = bfly_gdd_10 - cc_gdd_10,
-         diff_50_gdd = bfly_gdd_50 - cc_gdd_50)
+  mutate(diff_10_days = mean10 - w10,
+         diff_50_days = mean50 - w50,
+         diff_10_gdd =  cc_gdd_10 - bfly_gdd_10,
+         diff_50_gdd =  cc_gdd_50 - bfly_gdd_50)
 
 # 10% lags, days and gdd for each dataset
 
@@ -405,7 +405,7 @@ inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, y = diff_10_gdd,
   geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, y = diff_10_gdd, col = code)) +
-  geom_point() + labs(x = "Lag Bfly - CC! (days)", y = "Lag Bfly - CC! GDD")
+  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2)
 ggsave("figures/lag10_days_gdd.pdf", units = "in", height = 8, width = 10)
@@ -418,7 +418,7 @@ inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_50_days, y = diff_50_gdd,
   geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_50_days, y = diff_50_gdd, col = code)) +
-  geom_point() + labs(x = "Lag Bfly - CC! (days)", y = "Lag Bfly - CC! GDD")
+  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2)
 ggsave("figures/lag50_days_gdd.pdf", units = "in", height = 8, width = 10)
@@ -432,7 +432,7 @@ inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, fill = code)) +
   geom_density(alpha = 0.5) + labs(x = "Lag iNat - Bfly (days)")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag Bfly - CC! (days)")
+  geom_density(alpha = 0.5) + labs(x = "Lag CC! - Bfly (days)")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2, labels = "10%")
 ggsave("figures/lag10_days_density.pdf", units = "in", height = 8, width = 10)
@@ -445,12 +445,10 @@ inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_50_days, fill = code)) +
   geom_density(alpha = 0.5) + labs(x = "Lag iNat - Bfly (days)")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_50_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag Bfly - CC! (days)")
+  geom_density(alpha = 0.5) + labs(x = "Lag CC! - Bfly (days)")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2, labels = "50%")
 ggsave("figures/lag50_days_density.pdf", units = "in", height = 8, width = 10)
-
-# 
 
 # Variation (standard devation) across years w/in cell
 # 4 maps, 1 per var/unit combo, shaded hexes by SD, marginal histograms
@@ -468,128 +466,6 @@ nam_sf <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
   filter(sr_adm0_a3 %in% c("CAN", "USA"), iso_3166_2 != "US-AK", iso_3166_2 != "US-HI") %>%
   st_crop(xmin = -100, ymin = 25, xmax = -50, ymax = 55)
 
-inat_cc_var <- inat_cc_diff %>%
-  group_by(cell) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) %>%
-  mutate_at(c("cell"), ~as.character(.)) 
-
-inat_cc_var_sf <- hex_sf %>%
-  right_join(inat_cc_var)
-
-inat_adult_var <- inat_bfly_diff %>%
-  group_by(HEXcell) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) %>%
-  mutate_at(c("HEXcell"), ~as.character(.)) 
-
-inat_adult_var_sf <- hex_sf %>%
-  right_join(inat_adult_var, by = c("cell" = "HEXcell"))
-
-cc_adult_var <- cc_bfly_diff %>%
-  group_by(cell) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) %>%
-  mutate_at(c("cell"), ~as.character(.)) 
-
-cc_adult_var_sf <- hex_sf %>%
-  right_join(cc_adult_var)
-
-plot_titles <- c("var_10_days", "var_10_gdd", "var_50_days", "var_50_gdd")
-
-pdf(paste0(getwd(), "/figures/lag10_50_spatial_variance.pdf"), height = 8, width = 10)
-for(i in plot_titles) {
-  
-  date <- word(i, start= 2, end = 2, sep = "_")
-  units <- word(i, start= 3, end = 3, sep = "_")
-  
-  cc_inat <- tm_shape(nam_sf) + tm_polygons() + 
-    tm_shape(inat_cc_var_sf) + 
-    tm_polygons(col = i, title = paste0(units), palette = "YlGnBu", 
-                alpha = 0.6) +
-    tm_layout(title = "iNat - CC!", 
-              scale = 1.15, main.title = paste0("Variance in ", date, "% ", units))
-  
-  inat_bfly <- tm_shape(nam_sf) + tm_polygons() + 
-    tm_shape(inat_adult_var_sf) + 
-    tm_polygons(col = i, title = paste0(units), palette = "YlGnBu", 
-                alpha = 0.6) +
-    tm_layout(title = "iNat - Bfly", 
-              scale = 1.15)
-  
-  cc_bfly <- tm_shape(nam_sf) + tm_polygons() + 
-    tm_shape(cc_adult_var_sf) + 
-    tm_polygons(col = i, title = paste0(units), palette = "YlGnBu", 
-                alpha = 0.6) +
-    tm_layout(title = "Bfly - CC!", 
-              scale = 1.15)
-  
-  print(tmap_arrange(cc_inat, inat_bfly, cc_bfly, nrow = 2))
-}
-dev.off()
-
-# Is variance within a hex across years predicted by latitude
-
-summary(lm(var_10_days ~ latitude, inat_adult_var_sf))
-summary(lm(var_50_days ~ latitude, inat_adult_var_sf))
-summary(lm(var_10_gdd ~ latitude, inat_adult_var_sf))
-summary(lm(var_50_gdd ~ latitude, inat_adult_var_sf))
-# variance decreases w/ latitude
-
-# Variance across cells w/in year
-# 3 bar plots, variance vs. year
-
-inat_cc_year_var <- inat_cc_diff %>%
-  group_by(Year) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) 
-
-inat_adult_year_var <- inat_bfly_diff %>%
-  group_by(year) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) 
-
-adult_cc_year_var <- cc_bfly_diff %>%
-  group_by(Year) %>%
-  summarize(var_10_days = sd(diff_10_days, na.rm = T),
-            var_50_days = sd(diff_50_days, na.rm = T),
-            var_10_gdd = sd(diff_10_gdd, na.rm = T),
-            var_50_gdd = sd(diff_50_gdd, na.rm = T)) 
-
-pdf(paste0(getwd(), "/figures/lag10_50_temporal_variance.pdf"), height = 8, width = 10)
-for(i in plot_titles) {
-  
-  date <- word(i, start= 2, end = 2, sep = "_")
-  units <- word(i, start= 3, end = 3, sep = "_")
-  
-  cc_inat <- ggplot(inat_cc_year_var, aes_string(x = "Year", y = i)) + 
-    geom_col() +
-    labs(x = "Year", y = paste0("Std Dev (", units, ")"), title = "iNat - CC!")
-    
-  inat_bfly <- ggplot(inat_adult_year_var, aes_string(x = "year", y = i)) + 
-    geom_col() +
-    labs(x = "Year", y = paste0("Std Dev (", units, ")"), title = "iNat - Bfly")
-  
-  cc_bfly <- ggplot(adult_cc_year_var, aes_string(x = "Year", y = i)) + 
-    geom_col() +
-    labs(x = "Year", y = paste0("Std Dev (", units, ")"), title = "Bfly - CC!")
-  
-  grid <- plot_grid(cc_inat, inat_bfly, cc_bfly, labels = paste0(date, "%"))
-  
-  print(grid)
-}
-dev.off()
-
 ### Model variation in lags
 
 ## Map: recent year, lag values
@@ -606,7 +482,7 @@ cc_bfly_sf <- hex_sf %>%
   mutate_at(c("cell"), ~as.numeric(.)) %>%
   right_join(cc_bfly_diff)
 
-# 2019, 10%
+# 2018, 10%
 inat_cc_map <- tm_shape(nam_sf) + tm_polygons() +
   tm_shape(inat_cc_sf %>%
              filter(Year == 2018)) + tm_polygons(col = "diff_10_days", alpha = 0.5, palette = "YlGnBu", title = "10% iNat - CC!")
@@ -617,12 +493,12 @@ inat_bfly_map <-  tm_shape(nam_sf) + tm_polygons() +
 
 cc_bfly_map <- tm_shape(nam_sf) + tm_polygons() +
   tm_shape(cc_bfly_sf %>%
-             filter(Year == 2018, code == "RL")) + tm_polygons(col = "diff_10_days", alpha = 0.5, palette = "YlGnBu", title = "10% Bfly - CC!")
+             filter(Year == 2018, code == "RL")) + tm_polygons(col = "diff_10_days", alpha = 0.5, palette = "YlGnBu", title = "10% CC! - Bfly")
 
 panel_10 <- tmap_arrange(inat_cc_map, inat_bfly_map, cc_bfly_map, nrow = 2)
 tmap_save(panel_10, "figures/lag10_2018_map.pdf", units = "in", height = 8, width = 10)
 
-# 2019, 50%
+# 2018, 50%
 inat_cc_map <- tm_shape(nam_sf) + tm_polygons() +
   tm_shape(inat_cc_sf %>%
              filter(Year == 2018)) + tm_polygons(col = "diff_50_days", alpha = 0.5, palette = "YlGnBu", title = "50% iNat - CC!")
@@ -633,7 +509,7 @@ inat_bfly_map <-  tm_shape(nam_sf) + tm_polygons() +
 
 cc_bfly_map <- tm_shape(nam_sf) + tm_polygons() +
   tm_shape(cc_bfly_sf %>%
-             filter(Year == 2018, code == "RL")) + tm_polygons(col = "diff_50_days", alpha = 0.5, palette = "YlGnBu", title = "50% Bfly - CC!")
+             filter(Year == 2018, code == "RL")) + tm_polygons(col = "diff_50_days", alpha = 0.5, palette = "YlGnBu", title = "50% CC! - Bfly")
 
 panel_50 <- tmap_arrange(inat_cc_map, inat_bfly_map, cc_bfly_map, nrow = 2)
 tmap_save(panel_50, "figures/lag50_2018_map.pdf", units = "in", height = 8, width = 10)
