@@ -11,6 +11,21 @@ library(cowplot)
 
 theme_set(theme_classic(base_size = 15))
 
+## Hex grid and maps
+
+hex_sf <- read_sf("data/maps/hex_grid_crop.shp")
+
+hex_sf <- hex_sf %>%
+  mutate(centroid = st_centroid(hex_sf)$geometry,
+         latitude = map_dbl(centroid, ~{
+           c <- .
+           c[[2]]
+         }))
+
+nam_sf <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
+  filter(sr_adm0_a3 %in% c("CAN", "USA"), iso_3166_2 != "US-AK", iso_3166_2 != "US-HI") %>%
+  st_crop(xmin = -100, ymin = 25, xmax = -50, ymax = 55)
+
 ## Read in CatCount data (weekly phenology at hex cells, sites with at least 6 good weeks)
 
 cc_site_data <- read_csv("data/derived_data/cc_subset_trait_based_pheno.csv")
@@ -158,6 +173,107 @@ adult_bfly_dev <- adult_bfly %>%
          dev10 = w10 - mean10,
          dev50 = w50 - mean50)
 
+#### Figure 1 #####
+# Data availability hex map for three datasets
+
+cc_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(good_sites)
+
+cc_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc_sf) + 
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20)) +
+  tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
+
+inat_yrs <- inat_cats %>%
+  group_by(HEXcell) %>%
+  summarize(n_year = n_distinct(year))
+
+inat_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(inat_yrs, by = c("cell" = "HEXcell"))
+
+inat_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(inat_sf) + 
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20), legend.show = F) +
+  tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
+
+bfly_yrs <- adult_bfly %>%
+  group_by(HEXcell) %>%
+  summarize(n_year = n_distinct(year))
+
+bfly_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(bfly_yrs, by = c("cell" = "HEXcell"))
+
+bfly_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(bfly_sf) + 
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20), legend.show = F) +
+  tm_layout(main.title = "C) Adult Butterflies", scale = 1.5)
+
+data_map <- tmap_arrange(cc_map, inat_map, bfly_map, ncol = 2)
+tmap_save(data_map, "figures/fig1_data_availability.pdf", units = "in", height = 8, width = 10)
+
+#### Figure 2 ####
+# 10% date maps, 2018
+
+cc_2018 <- cc_pheno_unnest %>%
+  filter(Name %in% good_sites$Name) %>%
+  group_by(cell, Year) %>%
+  summarize(mean10 = mean(cc_10, na.rm = T),
+            mean50 = mean(cc_50, na.rm = T)) %>%
+  filter(Year == 2018)
+
+cc18_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(cc_2018)
+
+cc18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc18_sf) + 
+  tm_polygons(col = "mean10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20)) +
+  tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
+
+inat_2018 <- inat_cats %>%
+  filter(year == 2018)
+
+inat18_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(inat_2018, by = c("cell" = "HEXcell"))
+
+inat18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(inat18_sf) + 
+  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20), legend.show = F) +
+  tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
+
+bfly_2018 <- adult_bfly %>%
+  filter(year == 2018, code == "RL")
+
+bfly18_sf <- hex_sf %>%
+  mutate_at(c("cell"), ~as.numeric(.)) %>%
+  right_join(bfly_2018, by = c("cell" = "HEXcell"))
+
+bfly18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(bfly18_sf) + 
+  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20), legend.show = F) +
+  tm_layout(main.title = "C) Adult Butterflies (overwinter larvae)", scale = 1.5)
+
+data_map <- tmap_arrange(cc18_map, inat18_map, bfly18_map, ncol = 2)
+tmap_save(data_map, "figures/fig2_10pct_dates_map.pdf", units = "in", height = 8, width = 10)
+
+# 50% date maps, 2018
+
+cc18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc18_sf) + 
+  tm_polygons(col = "mean50", alpha = 0.5, title = "50% date (DOY)", palette = "YlGn", breaks = seq(165, 255, by = 15)) +
+  tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
+
+inat18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(inat18_sf) + 
+  tm_polygons(col = "w50", alpha = 0.5, title = "50% date (DOY)", palette = "YlGn", breaks = seq(165, 255, by = 15), legend.show = F) +
+  tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
+
+bfly18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(bfly18_sf) + 
+  tm_polygons(col = "w50", alpha = 0.5, title = "50% date (DOY)", palette = "YlGn", breaks = seq(165, 255, by = 15), legend.show = F) +
+  tm_layout(main.title = "C) Adult Butterflies (overwinter larvae)", scale = 1.5)
+
+data_map <- tmap_arrange(cc18_map, inat18_map, bfly18_map, ncol = 2)
+tmap_save(data_map, "figures/pct50_dates_map.pdf", units = "in", height = 8, width = 10)
+
+#### Figure 3 #####
+## Plot correlations of 10, 50% deviances
+
 cc_dev <- cc_pheno_unnest %>%
   filter(Name %in% good_sites$Name) %>%
   group_by(cell, Name) %>%
@@ -169,8 +285,6 @@ cc_dev <- cc_pheno_unnest %>%
   summarize(dev10 = mean(dev10),
             dev50 = mean(dev50))
 
-## Plot correlations of 10, 50% deviances
-
 quant_dev <- cc_dev %>%
   left_join(select(adult_bfly_dev, year, HEXcell, code, dev10, dev50), by = c("Year" = "year", "cell" = "HEXcell"), suffix = c("_cc", "_adult")) %>%
   left_join(select(inat_cats_dev, year, HEXcell, dev10, dev50), by = c("Year" = "year", "cell" = "HEXcell"))
@@ -180,48 +294,55 @@ inat_bfly_dev <- select(adult_bfly_dev, year, HEXcell, code, dev10, dev50) %>%
 
 # 10%
 inat_cc10 <- ggplot(quant_dev, aes(x = dev10_cc, y = dev10)) + geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
+  geom_abline(slope = 1, intercept = 0, lty = 2) +
   geom_smooth(method = "lm", se = F) +
-  labs(x = "Deviance 10% Caterpillars Count!", y = "Deviance 10% iNaturalist caterpillars")
+  labs(x = "Deviance 10% Caterpillars Count!", y = "Deviance 10% iNaturalist caterpillars") +
+  theme(plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"))
 
 inat_adult10 <- ggplot(filter(inat_bfly_dev, !is.na(code)), aes(x = dev10_bfly, y = dev10_inat, col = code)) + geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
+  geom_abline(slope = 1, intercept = 0, lty = 2) +
   geom_smooth(method = "lm", se = F) +
   xlim(-40, 40) +
   labs(x = "Deviance 10% Adult butterflies", y = "Deviance 10% iNaturalist caterpillars") +
-  theme(legend.position = "none")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF")) +
+  theme(legend.position = "none", plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"))
 
 cc_adult10 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev10_adult, x = dev10_cc, col = code)) + geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
+  geom_abline(slope = 1, intercept = 0, lty = 2) +
   geom_smooth(method = "lm", se = F) +
-  labs(y = "Deviance 10% Adult butterflies", x = "Deviance 10% Caterpillars Count!") +
-  theme(legend.position = c(0.8, 0.2))
+  labs(y = "Deviance 10% Adult butterflies", x = "Deviance 10% Caterpillars Count!", col = "Overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  theme(legend.position = c(0.15, 0.8), plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"), legend.background = element_rect(fill = "transparent"))
 
-plot_grid(inat_cc10, inat_adult10, cc_adult10, ncol = 2)
-ggsave("figures/relative_adult_inat_cc_10.pdf", units = "in", height = 8, width = 10)
+plot_grid(inat_cc10, inat_adult10, cc_adult10, ncol = 2, labels = c("A", "B", "C"), label_size = 15, hjust = c(-2))
+ggsave("figures/fig3_relative_adult_inat_cc_10.pdf", units = "in", height = 8, width = 10)
 
 # 50%
 inat_cc50 <- ggplot(quant_dev, aes(x = dev50_cc, y = dev50)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
-  labs(x = "Deviance 50% Caterpillars Count!", y = "Deviance 50% iNaturalist caterpillars")
+  labs(x = "Deviance 50% Caterpillars Count!", y = "Deviance 50% iNaturalist caterpillars") +
+  theme(plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"))
 
 inat_adult50 <- ggplot(filter(inat_bfly_dev, !is.na(code)), aes(x = dev50_bfly, y = dev50_inat, col = code)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
   xlim(-30, 30) +
   labs(x = "Deviance 50% Adult butterflies", y = "Deviance 50% iNaturalist caterpillars") +
-  theme(legend.position = "none")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF")) +
+  theme(legend.position = "none", plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"))
 
 cc_adult50 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev50_adult, x = dev50_cc, col = code)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
-  labs(y = "Deviance 50% Adult butterflies", x = "Deviance 50% Caterpillars Count!") +
-  theme(legend.position = c(0.85, 0.15), legend.background = element_rect(fill = "transparent"))
+  labs(y = "Deviance 50% Adult butterflies", x = "Deviance 50% Caterpillars Count!", col = "Overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  theme(legend.position = c(0.15, 0.8), plot.margin = unit(c(0.5, 0.1, 0.1, 0.1), "in"), legend.background = element_rect(fill = "transparent"))
 
-plot_grid(inat_cc50, inat_adult50, cc_adult50, ncol = 2)
+plot_grid(inat_cc50, inat_adult50, cc_adult50, ncol = 2, labels = c("A", "B", "C"))
 ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width = 10)
 
+#### Figure 2 sensitivity: different subsets of data ####
 ## Forest only subset
 
 for_inat_cats <- read_csv("data/derived_data/FORESTONLY_allCaterpillars_phenometrics.csv")
@@ -260,12 +381,14 @@ for_inat_adult10 <- ggplot(filter(for_inat_bfly_dev, !is.na(code)), aes(x = dev1
   geom_smooth(method = "lm", se = F) +
   xlim(-25,50)+
   labs(x = "Deviance 10% Adult butterflies", y = "Deviance 10% iNaturalist caterpillars") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = "none")
 
 for_cc_adult10 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(y = dev10_adult, x = dev10_cc, col = code)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
-  labs(y = "Deviance 10% Adult butterflies", x = "Deviance 10% Caterpillars Count!") +
+  labs(y = "Deviance 10% Adult butterflies", x = "Deviance 10% Caterpillars Count!", col = "Overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = c(0.85, 0.2))
 
 plot_grid(for_inat_cc10, for_inat_adult10, for_cc_adult10, ncol = 2, labels = c("Forest only"))
@@ -282,12 +405,14 @@ for_inat_adult50 <- ggplot(filter(for_inat_bfly_dev, !is.na(code)), aes(x = dev5
   geom_smooth(method = "lm", se = F) +
   xlim(-20, 30) +
   labs(x = "Deviance 50% Adult butterflies", y = "Deviance 50% iNaturalist caterpillars") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = "none")
 
 for_cc_adult50 <- ggplot(filter(for_quant_dev, !is.na(code)), aes(y = dev50_adult, x = dev50_cc, col = code)) + geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   geom_smooth(method = "lm", se = F) +
-  labs(y = "Deviance 50% Adult butterflies", x = "Deviance 50% Caterpillars Count!") +
+  labs(y = "Deviance 50% Adult butterflies", x = "Deviance 50% Caterpillars Count!", col = "Overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = c(0.85, 0.15), legend.background = element_rect(fill = "transparent"))
 
 plot_grid(for_inat_cc50, for_inat_adult50, for_cc_adult50, ncol = 2)
@@ -312,6 +437,7 @@ inat_only_10 <- ggplot(filter(inat_only_bfly_dev, !is.na(code)), aes(x = dev10_b
   geom_smooth(method = "lm", se = F) +
   xlim(-25, 25) +
   labs(x = "Deviance 10% Adult butterflies", y = "Deviance 10% iNaturalist caterpillars") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = "none")
 
 inat_only_50 <- ggplot(filter(inat_only_bfly_dev, !is.na(code)), aes(x = dev50_bfly, y = dev50_inat, col = code)) + geom_point() +
@@ -319,10 +445,13 @@ inat_only_50 <- ggplot(filter(inat_only_bfly_dev, !is.na(code)), aes(x = dev50_b
   geom_smooth(method = "lm", se = F) +
   xlim(-20, 20) +
   labs(x = "Deviance 50% Adult butterflies", y = "Deviance 50% iNaturalist caterpillars", col = "Overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
   theme(legend.position = c(0.85, 0.15))
 
 plot_grid(inat_only_10, inat_only_50)
 ggsave("figures/relative_10_50_inat_only_.pdf", units = "in", height = 5, width = 10)
+
+### Caterpillars Count! Obs excluded from iNat Cats
 
 ### Absolute comparisons: lag predicted by GDD and time
 
@@ -402,10 +531,12 @@ inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_10_days, y = diff_10_gdd)) +
   geom_point() + labs(x = "Lag iNat - CC! (days)", y = "Lag iNat - CC! GDD")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, y = diff_10_gdd, col = code)) +
-  geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD", col = "Overwinter")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, y = diff_10_gdd, col = code)) +
-  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD", col = "Overwinter")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2)
 ggsave("figures/lag10_days_gdd.pdf", units = "in", height = 8, width = 10)
@@ -415,56 +546,56 @@ inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_50_days, y = diff_50_gdd)) +
   geom_point() + labs(x = "Lag iNat - CC! (days)", y = "Lag iNat - CC! GDD")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_50_days, y = diff_50_gdd, col = code)) +
-  geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  geom_point() + labs(x = "Lag iNat - Bfly (days)", y = "Lag iNat - Bfly GDD", col = "Overwinter")
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_50_days, y = diff_50_gdd, col = code)) +
-  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD")
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  geom_point() + labs(x = "Lag CC! - Bfly (days)", y = "Lag CC! - Bfly GDD", col = "Overwinter")
 
 plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2)
 ggsave("figures/lag50_days_gdd.pdf", units = "in", height = 8, width = 10)
 
+#### Figure 4 #####
 ## Density plots for lags in days - 10%
 
 inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_10_days)) +
-  geom_density(fill = "gray") + labs(x = "Lag iNat - CC! (days)")
+  geom_density(fill = "gray") + labs(x = "10% Lag iNat - CC! (days)",  y = "Density")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag iNat - Bfly (days)")
+  geom_density(alpha = 0.5) + labs(x = "10% Lag iNat - Bfly (days)", fill = "Overwinter", y = "") +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag CC! - Bfly (days)")
+  geom_density(alpha = 0.5) + labs(x = "10% Lag CC! - Bfly (days)", y = "Density") +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
-plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2, labels = "10%")
-ggsave("figures/lag10_days_density.pdf", units = "in", height = 8, width = 10)
+legend <- get_legend(inat_adult_plot)
+
+plot_grid(inat_cc_plot, inat_adult_plot + theme(legend.position = "none"), adult_cc_plot + theme(legend.position = "none"), legend,
+          nrow = 2, labels = c("A", "B", "C"), label_size = 15)
+ggsave("figures/fig4_lag10_days_density.pdf", units = "in", height = 8, width = 10)
 
 ## Density plots for lags in days - 50%
 inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_50_days)) +
-  geom_density(fill = "gray") + labs(x = "Lag iNat - CC! (days)")
+  geom_density(fill = "gray") + labs(x = "50% Lag iNat - CC! (days)", y = "Density")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_50_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag iNat - Bfly (days)")
+  geom_density(alpha = 0.5) + labs(x = "50% Lag iNat - Bfly (days)", y = "", fill = "Overwinter") +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_50_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Lag CC! - Bfly (days)")
+  geom_density(alpha = 0.5) + labs(x = "50% Lag CC! - Bfly (days)", y = "Density") +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
-plot_grid(inat_cc_plot, inat_adult_plot, adult_cc_plot, nrow = 2, labels = "50%")
+legend <- get_legend(inat_adult_plot)
+
+plot_grid(inat_cc_plot, inat_adult_plot + theme(legend.position = "none"), adult_cc_plot + theme(legend.position = "none"), legend,
+          nrow = 2, labels = c("A", "B", "C"), label_size = 15)
 ggsave("figures/lag50_days_density.pdf", units = "in", height = 8, width = 10)
 
 # Variation (standard devation) across years w/in cell
 # 4 maps, 1 per var/unit combo, shaded hexes by SD, marginal histograms
-
-hex_sf <- read_sf("data/maps/hex_grid_crop.shp")
-
-hex_sf <- hex_sf %>%
-  mutate(centroid = st_centroid(hex_sf)$geometry,
-         latitude = map_dbl(centroid, ~{
-           c <- .
-           c[[2]]
-           }))
-
-nam_sf <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
-  filter(sr_adm0_a3 %in% c("CAN", "USA"), iso_3166_2 != "US-AK", iso_3166_2 != "US-HI") %>%
-  st_crop(xmin = -100, ymin = 25, xmax = -50, ymax = 55)
 
 ### Model variation in lags
 
@@ -514,6 +645,7 @@ cc_bfly_map <- tm_shape(nam_sf) + tm_polygons() +
 panel_50 <- tmap_arrange(inat_cc_map, inat_bfly_map, cc_bfly_map, nrow = 2)
 tmap_save(panel_50, "figures/lag50_2018_map.pdf", units = "in", height = 8, width = 10)
 
+#### Figure 5 ####
 ## Model: lag ~ latitude + temp + temp:lat + (overwintering?)
 
 hex_temps <- read_csv("data/derived_data/hex_mean_temps.csv")
@@ -532,7 +664,7 @@ inat_bfly_mod <- inat_bfly_sf %>%
 
 cc_bfly_mod <- cc_bfly_sf %>%
   left_join(hex_temps, by = c("cell", "Year" = "year")) %>%
-  mutate(dataset = "Bfly - CC!") %>%
+  mutate(dataset = "CC! - Bfly") %>%
   group_by(dataset) %>%
   nest()
 
@@ -554,9 +686,11 @@ ggplot(mod_ests_10, aes(x = term, y = estimate, col = dataset)) +
                                                           width = 0.1, cex = 1, position = position_dodge(width = 0.3)) + 
   geom_hline(yintercept = 0, lty = 2) +
   labs(x = "", y = "Estimate", col = "Lag 10% date") +
+  scale_x_discrete(labels = c("mean_temp" = "Spring temp", "latitude:mean_temp" = "Latitude:Spring temp", "latitude" = "Latitude")) +
+  scale_color_manual(values = c("#3E4A89FF", "#1F9E89FF", "#6DCD59FF")) +
   theme(legend.position = c(0.2, 0.2)) +
   coord_flip()
-ggsave("figures/lag10_mod_ests.pdf")
+ggsave("figures/fig5_lag10_mod_ests.pdf")
 
 mod_ests_50 <- mod_all %>%
   select(dataset, tidy50) %>%
@@ -569,6 +703,8 @@ ggplot(mod_ests_50, aes(x = term, y = estimate, col = dataset)) +
                 width = 0.1, cex = 1, position = position_dodge(width = 0.3)) + 
   geom_hline(yintercept = 0, lty = 2) +
   labs(x = "", y = "Estimate", col = "Lag 50% date") +
+  scale_x_discrete(labels = c("mean_temp" = "Spring temp", "latitude:mean_temp" = "Latitude:Spring temp", "latitude" = "Latitude")) +
+  scale_color_manual(values = c("#3E4A89FF", "#1F9E89FF", "#6DCD59FF")) +
   theme(legend.position = c(0.2, 0.2)) +
   coord_flip()
 ggsave("figures/lag50_mod_ests.pdf")
