@@ -350,6 +350,32 @@ cc_adult50 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev50_adult, x = d
 plot_grid(inat_cc50, inat_adult50, cc_adult50, ncol = 2, labels = c("A", "B", "C"))
 ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width = 10)
 
+## LM table
+
+inat_adult_mods <- list(mod10 = broom::tidy(lm(dev10_bfly ~ dev10_inat + code, data = inat_bfly_dev)),
+                        mod50 = broom::tidy(lm(dev50_bfly ~ dev50_inat + code, data = inat_bfly_dev)))
+
+inat_adult_df <- rbind(data.frame(pct = "10", inat_adult_mods$mod10, r2 = summary(lm(dev10_bfly ~ dev10_inat + code, data = inat_bfly_dev))$r.squared),
+                       data.frame(pct = "50", inat_adult_mods$mod50, r2 = summary(lm(dev50_bfly ~ dev50_inat + code, data = inat_bfly_dev))$r.squared)) %>%
+  mutate(datasets = "iNat-Bfly")
+
+inat_cc_mods <- list(mod10 = broom::tidy(lm(dev10 ~ dev10_cc, data = quant_dev)),
+                     mod50 = broom::tidy(lm(dev50 ~ dev50_cc, data = quant_dev)))
+
+inat_cc_df <- rbind(data.frame(pct = "10", inat_cc_mods$mod10, r2 = summary(lm(dev10 ~ dev10_cc, data = quant_dev))$r.squared),
+                       data.frame(pct = "50", inat_cc_mods$mod50, r2 = summary(lm(dev50 ~ dev50_cc, data = quant_dev))$r.squared)) %>%
+  mutate(datasets = "iNat-CC")
+
+cc_adult_mods <- list(mod10 = broom::tidy(lm(dev10_adult ~ dev10_cc + code, data = quant_dev)),
+                      mod50 = broom::tidy(lm(dev50_adult ~ dev50_cc + code, data = quant_dev)))
+
+cc_adult_df <- rbind(data.frame(pct = "10", cc_adult_mods$mod10, r2 = summary(lm(dev10_adult ~ dev10_cc + code, data = quant_dev))$r.squared),
+                    data.frame(pct = "50", cc_adult_mods$mod50, r2 = summary(lm(dev50_adult ~ dev50_cc + code, data = quant_dev))$r.squared)) %>%
+  mutate(datasets = "CC-Bfly")
+
+rel_mods <- bind_rows(inat_adult_df, inat_cc_df, cc_adult_df)
+write.csv(rel_mods, "data/derived_data/relative_pheno_mods.csv", row.names = F)
+
 #### Figure 2 sensitivity: different subsets of data ####
 ## Forest only subset
 
@@ -723,3 +749,17 @@ ggsave("figures/lag50_mod_ests.pdf", units = "in", height = 3, width = 7)
 
 sjPlot::plot_model(mod_all$mod10[[2]], type = "int")
 sjPlot::plot_model(mod_all$mod50[[2]], type = "int")
+
+## Summary model table
+
+mod_summary <- mod_all %>%
+  mutate(r2_10 = map_dbl(mod10, ~summary(.)$r.squared),
+         r2_50 = map_dbl(mod50, ~summary(.)$r.squared)) %>%
+  dplyr::select(-data, -mod10, -mod50) %>%
+  pivot_longer(tidy10:tidy50, names_to = "pct", values_to = "data") %>%
+  pivot_longer(r2_10:r2_50, names_to = "pct_r2", values_to = "r2") %>%
+  filter(pct == "tidy10" & pct_r2 == "r2_10" | pct == "tidy50" & pct_r2 == "r2_50") %>%
+  unnest(cols = c("data")) %>%
+  select(-pct_r2) %>%
+  distinct()
+write.csv(mod_summary, "data/derived_data/lag_mods.csv", row.names = F)
