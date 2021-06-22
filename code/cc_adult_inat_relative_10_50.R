@@ -181,7 +181,7 @@ cc_sf <- hex_sf %>%
   right_join(good_sites)
 
 cc_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc_sf) + 
-  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20)) +
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(2, 5, 10, 15, 20, 25)) +
   tm_shape(cc_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
 
@@ -194,7 +194,7 @@ inat_sf <- hex_sf %>%
   right_join(inat_yrs, by = c("cell" = "HEXcell"))
 
 inat_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(inat_sf) + 
-  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20), legend.show = F) +
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(2, 5, 10, 15, 20, 25), legend.show = F) +
   tm_shape(cc_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
 
@@ -207,7 +207,7 @@ bfly_sf <- hex_sf %>%
   right_join(bfly_yrs, by = c("cell" = "HEXcell"))
 
 bfly_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(bfly_sf) + 
-  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(1, 5, 10, 15, 20), legend.show = F) +
+  tm_polygons(col = "n_year", alpha = 0.5, title = "Years", palette = "YlGnBu", breaks = c(2, 5, 10, 15, 20, 25), legend.show = F) +
   tm_shape(cc_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "C) Adult Butterflies", scale = 1.5)
 
@@ -228,8 +228,8 @@ cc18_sf <- hex_sf %>%
   mutate_at(c("cell"), ~as.numeric(.)) %>%
   right_join(cc_2018)
 
-cc18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc18_sf) + 
-  tm_polygons(col = "mean10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20)) +
+cc18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(cc18_sf) + 
+  tm_polygons(col = "mean10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(90, 240, by = 30)) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
 
@@ -240,8 +240,8 @@ inat18_sf <- hex_sf %>%
   mutate_at(c("cell"), ~as.numeric(.)) %>%
   right_join(inat_2018, by = c("cell" = "HEXcell"))
 
-inat18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(inat18_sf) + 
-  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20), legend.show = F) +
+inat18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(inat18_sf) + 
+  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(90, 240, by = 30), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
 
@@ -252,8 +252,8 @@ bfly18_sf <- hex_sf %>%
   mutate_at(c("cell"), ~as.numeric(.)) %>%
   right_join(bfly_2018, by = c("cell" = "HEXcell"))
 
-bfly18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(bfly18_sf) + 
-  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(110, 230, by = 20), legend.show = F) +
+bfly18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(bfly18_sf) + 
+  tm_polygons(col = "w10", alpha = 0.5, title = "10% date (DOY)", palette = "YlGn", breaks = seq(90, 240, by = 30), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "C) Adult Butterflies (overwinter larvae)", scale = 1.5)
 
@@ -352,11 +352,11 @@ ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width 
 
 ## LM table
 
-inat_adult_mods <- list(mod10 = broom::tidy(lm(dev10_bfly ~ dev10_inat + code, data = inat_bfly_dev)),
-                        mod50 = broom::tidy(lm(dev50_bfly ~ dev50_inat + code, data = inat_bfly_dev)))
+inat_adult_mods <- list(mod10 = broom::tidy(lm(dev10_inat ~ dev10_bfly  + code, data = inat_bfly_dev)),
+                        mod50 = broom::tidy(lm(dev50_inat ~ dev50_bfly + code, data = inat_bfly_dev)))
 
-inat_adult_df <- rbind(data.frame(pct = "10", inat_adult_mods$mod10, r2 = summary(lm(dev10_bfly ~ dev10_inat + code, data = inat_bfly_dev))$r.squared),
-                       data.frame(pct = "50", inat_adult_mods$mod50, r2 = summary(lm(dev50_bfly ~ dev50_inat + code, data = inat_bfly_dev))$r.squared)) %>%
+inat_adult_df <- rbind(data.frame(pct = "10", inat_adult_mods$mod10, r2 = summary(lm(dev10_inat ~ dev10_bfly + code, data = inat_bfly_dev))$r.squared),
+                       data.frame(pct = "50", inat_adult_mods$mod50, r2 = summary(lm(dev50_inat ~ dev50_bfly + code, data = inat_bfly_dev))$r.squared)) %>%
   mutate(datasets = "iNat-Bfly")
 
 inat_cc_mods <- list(mod10 = broom::tidy(lm(dev10 ~ dev10_cc, data = quant_dev)),
@@ -375,6 +375,8 @@ cc_adult_df <- rbind(data.frame(pct = "10", cc_adult_mods$mod10, r2 = summary(lm
 
 rel_mods <- bind_rows(inat_adult_df, inat_cc_df, cc_adult_df)
 write.csv(rel_mods, "data/derived_data/relative_pheno_mods.csv", row.names = F)
+
+### Similarity index between species - get inat cat and adult bfly species composition from Mike
 
 #### Figure 2 sensitivity: different subsets of data ####
 ## Forest only subset
