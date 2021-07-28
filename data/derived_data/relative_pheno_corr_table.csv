@@ -1,0 +1,15 @@
+"data","r_est","conf_lo","conf_hi","p_val"
+"quant_dev$dev10_cc and quant_dev$dev10",0.616504064670833,0.369679370438354,0.782055216657024,3.76589264848901e-05
+"quant_dev$dev50_cc and quant_dev$dev50",0.571548135748455,0.308172306653314,0.753547493402794,0.000178136776116218
+"quant_dev$dev10_cc[quant_dev$code == ""RE""] and quant_dev$dev10_adult[quant_dev$code == ""RE""]",0.314084138389794,-0.442296169240561,0.809377679688755,0.410445851326313
+"quant_dev$dev50_cc[quant_dev$code == ""RE""] and quant_dev$dev50_adult[quant_dev$code == ""RE""]",-0.0924048401844606,-0.712784354853134,0.609095901760305,0.813088733903615
+"quant_dev$dev10_cc[quant_dev$code == ""RL""] and quant_dev$dev10_adult[quant_dev$code == ""RL""]",0.149369525988244,-0.437633166576021,0.647098365077708,0.626228847040226
+"quant_dev$dev50_cc[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",-0.0570145657165629,-0.589481776575247,0.509991711686829,0.853225769213252
+"quant_dev$dev10_cc[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",-0.0225084073972817,-0.512495548908796,0.478536208119526,0.934058290405207
+"quant_dev$dev50_cc[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",-0.140706027261675,-0.594916675883444,0.381616572977962,0.603225833365345
+"quant_dev$dev10[quant_dev$code == ""RE""] and quant_dev$dev10_adult[quant_dev$code == ""RE""]",0.349337641893193,-0.409876533025394,0.822611298222767,0.356793501752115
+"quant_dev$dev50[quant_dev$code == ""RE""] and quant_dev$dev50_adult[quant_dev$code == ""RE""]",0.030753702851967,-0.646573757896184,0.680967199372803,0.937398428861648
+"quant_dev$dev10[quant_dev$code == ""RL""] and quant_dev$dev10_adult[quant_dev$code == ""RL""]",0.28199397899298,-0.318474087096471,0.720960393241721,0.35059475996198
+"quant_dev$dev50[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",0.212533831324066,-0.383341972311503,0.683481399277966,0.485728854726367
+"quant_dev$dev10[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",0.252384393201001,-0.278115489640869,0.664904641110781,0.345662154188937
+"quant_dev$dev50[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",0.104960882673523,-0.412190586938615,0.570959384718149,0.698861159792954
