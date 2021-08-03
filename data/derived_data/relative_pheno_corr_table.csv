@@ -7,9 +7,9 @@
 "quant_dev$dev50_cc[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",-0.0570145657165629,-0.589481776575247,0.509991711686829,0.853225769213252
 "quant_dev$dev10_cc[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",-0.0225084073972817,-0.512495548908796,0.478536208119526,0.934058290405207
 "quant_dev$dev50_cc[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",-0.140706027261675,-0.594916675883444,0.381616572977962,0.603225833365345
-"quant_dev$dev10[quant_dev$code == ""RE""] and quant_dev$dev10_adult[quant_dev$code == ""RE""]",0.349337641893193,-0.409876533025394,0.822611298222767,0.356793501752115
-"quant_dev$dev50[quant_dev$code == ""RE""] and quant_dev$dev50_adult[quant_dev$code == ""RE""]",0.030753702851967,-0.646573757896184,0.680967199372803,0.937398428861648
-"quant_dev$dev10[quant_dev$code == ""RL""] and quant_dev$dev10_adult[quant_dev$code == ""RL""]",0.28199397899298,-0.318474087096471,0.720960393241721,0.35059475996198
-"quant_dev$dev50[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",0.212533831324066,-0.383341972311503,0.683481399277966,0.485728854726367
-"quant_dev$dev10[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",0.252384393201001,-0.278115489640869,0.664904641110781,0.345662154188937
-"quant_dev$dev50[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",0.104960882673523,-0.412190586938615,0.570959384718149,0.698861159792954
+"inat_bfly_dev$dev10_inat[inat_bfly_dev$code == ""RE""] and inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == ""RE""]",0.0175659763978112,-0.134656833187194,0.168978797760328,0.821734365725622
+"inat_bfly_dev$dev50_inat[inat_bfly_dev$code == ""RE""] and inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == ""RE""]",0.198282952472362,0.0478605323349105,0.339911155369356,0.0102083451793402
+"inat_bfly_dev$dev10_inat[inat_bfly_dev$code == ""RL""] and inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == ""RL""]",0.255690861888344,0.145556029928435,0.359566104230826,9.01575693196175e-06
+"inat_bfly_dev$dev50_inat[inat_bfly_dev$code == ""RL""] and inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == ""RL""]",0.274499126454507,0.165297349546732,0.377051698083008,1.7640001656721e-06
+"inat_bfly_dev$dev10_inat[inat_bfly_dev$code == ""RP""] and inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == ""RP""]",0.144958952442827,0.0284288041159045,0.257601869807901,0.0150164479145575
+"inat_bfly_dev$dev50_inat[inat_bfly_dev$code == ""RP""] and inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == ""RP""]",0.179586957998392,0.0639177616396519,0.290494886821943,0.00251433998259753

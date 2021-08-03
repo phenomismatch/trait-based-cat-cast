@@ -366,14 +366,14 @@ cor_res[[6]] <- cor.test(quant_dev$dev50_cc[quant_dev$code == "RL"], quant_dev$d
 cor_res[[7]] <- cor.test(quant_dev$dev10_cc[quant_dev$code == "RP"], quant_dev$dev10_adult[quant_dev$code == "RP"])
 cor_res[[8]] <- cor.test(quant_dev$dev50_cc[quant_dev$code == "RP"], quant_dev$dev50_adult[quant_dev$code == "RP"])
 
-cor_res[[9]] <- cor.test(quant_dev$dev10[quant_dev$code == "RE"], quant_dev$dev10_adult[quant_dev$code == "RE"])
-cor_res[[10]] <- cor.test(quant_dev$dev50[quant_dev$code == "RE"], quant_dev$dev50_adult[quant_dev$code == "RE"])
+cor_res[[9]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RE"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RE"])
+cor_res[[10]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RE"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RE"])
 
-cor_res[[11]] <- cor.test(quant_dev$dev10[quant_dev$code == "RL"], quant_dev$dev10_adult[quant_dev$code == "RL"])
-cor_res[[12]] <- cor.test(quant_dev$dev50[quant_dev$code == "RL"], quant_dev$dev50_adult[quant_dev$code == "RL"])
+cor_res[[11]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RL"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RL"])
+cor_res[[12]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RL"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RL"])
 
-cor_res[[13]] <- cor.test(quant_dev$dev10[quant_dev$code == "RP"], quant_dev$dev10_adult[quant_dev$code == "RP"])
-cor_res[[14]] <- cor.test(quant_dev$dev50[quant_dev$code == "RP"], quant_dev$dev50_adult[quant_dev$code == "RP"])
+cor_res[[13]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RP"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RP"])
+cor_res[[14]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RP"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RP"])
 
 cor_df <- map_dfr(cor_res, ~{
   res <- .
@@ -836,3 +836,7 @@ adult_temp <- ggplot(adult_bfly_dev_temp, aes(x = temp_dev, y = dev50, col = cod
 
 plot_grid(cc_temp, inat_temp, adult_temp, nrow = 2, labels = c("A", "B", "C"))
 ggsave("figures/temp_deviance_50.pdf", height = 8, width = 10)
+
+## Temp deviance model results table
+
+
