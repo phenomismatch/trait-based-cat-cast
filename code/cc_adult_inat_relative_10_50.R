@@ -350,31 +350,42 @@ cc_adult50 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev50_adult, x = d
 plot_grid(inat_cc50, inat_adult50, cc_adult50, ncol = 2, labels = c("A", "B", "C"))
 ggsave("figures/relative_adult_inat_cc_50.pdf", units = "in", height = 8, width = 10)
 
-## LM table
+## Correlation table
 
-inat_adult_mods <- list(mod10 = broom::tidy(lm(dev10_inat ~ dev10_bfly  + code, data = inat_bfly_dev)),
-                        mod50 = broom::tidy(lm(dev50_inat ~ dev50_bfly + code, data = inat_bfly_dev)))
+cor_res <- vector(mode = "list", length = 14)
 
-inat_adult_df <- rbind(data.frame(pct = "10", inat_adult_mods$mod10, r2 = summary(lm(dev10_inat ~ dev10_bfly + code, data = inat_bfly_dev))$r.squared),
-                       data.frame(pct = "50", inat_adult_mods$mod50, r2 = summary(lm(dev50_inat ~ dev50_bfly + code, data = inat_bfly_dev))$r.squared)) %>%
-  mutate(datasets = "iNat-Bfly")
+cor_res[[1]] <- cor.test(quant_dev$dev10_cc, quant_dev$dev10)
+cor_res[[2]] <- cor.test(quant_dev$dev50_cc, quant_dev$dev50)
 
-inat_cc_mods <- list(mod10 = broom::tidy(lm(dev10 ~ dev10_cc, data = quant_dev)),
-                     mod50 = broom::tidy(lm(dev50 ~ dev50_cc, data = quant_dev)))
+cor_res[[3]] <- cor.test(quant_dev$dev10_cc[quant_dev$code == "RE"], quant_dev$dev10_adult[quant_dev$code == "RE"])
+cor_res[[4]] <- cor.test(quant_dev$dev50_cc[quant_dev$code == "RE"], quant_dev$dev50_adult[quant_dev$code == "RE"])
 
-inat_cc_df <- rbind(data.frame(pct = "10", inat_cc_mods$mod10, r2 = summary(lm(dev10 ~ dev10_cc, data = quant_dev))$r.squared),
-                       data.frame(pct = "50", inat_cc_mods$mod50, r2 = summary(lm(dev50 ~ dev50_cc, data = quant_dev))$r.squared)) %>%
-  mutate(datasets = "iNat-CC")
+cor_res[[5]] <- cor.test(quant_dev$dev10_cc[quant_dev$code == "RL"], quant_dev$dev10_adult[quant_dev$code == "RL"])
+cor_res[[6]] <- cor.test(quant_dev$dev50_cc[quant_dev$code == "RL"], quant_dev$dev50_adult[quant_dev$code == "RL"])
 
-cc_adult_mods <- list(mod10 = broom::tidy(lm(dev10_adult ~ dev10_cc + code, data = quant_dev)),
-                      mod50 = broom::tidy(lm(dev50_adult ~ dev50_cc + code, data = quant_dev)))
+cor_res[[7]] <- cor.test(quant_dev$dev10_cc[quant_dev$code == "RP"], quant_dev$dev10_adult[quant_dev$code == "RP"])
+cor_res[[8]] <- cor.test(quant_dev$dev50_cc[quant_dev$code == "RP"], quant_dev$dev50_adult[quant_dev$code == "RP"])
 
-cc_adult_df <- rbind(data.frame(pct = "10", cc_adult_mods$mod10, r2 = summary(lm(dev10_adult ~ dev10_cc + code, data = quant_dev))$r.squared),
-                    data.frame(pct = "50", cc_adult_mods$mod50, r2 = summary(lm(dev50_adult ~ dev50_cc + code, data = quant_dev))$r.squared)) %>%
-  mutate(datasets = "CC-Bfly")
+cor_res[[9]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RE"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RE"])
+cor_res[[10]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RE"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RE"])
 
-rel_mods <- bind_rows(inat_adult_df, inat_cc_df, cc_adult_df)
-write.csv(rel_mods, "data/derived_data/relative_pheno_mods.csv", row.names = F)
+cor_res[[11]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RL"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RL"])
+cor_res[[12]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RL"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RL"])
+
+cor_res[[13]] <- cor.test(inat_bfly_dev$dev10_inat[inat_bfly_dev$code == "RP"], inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == "RP"])
+cor_res[[14]] <- cor.test(inat_bfly_dev$dev50_inat[inat_bfly_dev$code == "RP"], inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == "RP"])
+
+cor_df <- map_dfr(cor_res, ~{
+  res <- .
+  
+  data.frame(data = res$data.name,
+             r_est = res$estimate,
+             conf_lo = res$conf.int[1],
+             conf_hi = res$conf.int[2],
+             p_val = res$p.value)
+})
+
+write.csv(cor_df, "data/derived_data/relative_pheno_corr_table.csv", row.names = F)
 
 ### Similarity index between species - get inat cat and adult bfly species composition from Mike
 
@@ -687,25 +698,32 @@ cc_bfly_map <- tm_shape(nam_sf) + tm_polygons() +
 panel_50 <- tmap_arrange(inat_cc_map, inat_bfly_map, cc_bfly_map, nrow = 2)
 tmap_save(panel_50, "figures/lag50_2018_map.pdf", units = "in", height = 8, width = 10)
 
-#### Figure 5 ####
+#### Figure 6 ####
 ## Model: lag ~ latitude + temp + temp:lat + (overwintering?)
 
-hex_temps <- read_csv("data/derived_data/hex_mean_temps.csv")
+load("data/cpc.tempC.2010-2020.RData")
+
+hex_temps <- cpc %>%
+  filter(doy >=172 & doy <= 266) %>%
+  group_by(hex_cell, year) %>%
+  summarize(mean_tmin = mean(t.min, na.rm = T),
+            mean_tmax = mean(t.max, na.rm = T),
+            mean_temp = mean(mean_tmin, mean_tmax, na.rm = T))
 
 inat_cc_mod <- inat_cc_sf %>%
-  left_join(hex_temps, by = c("cell", "Year" = "year")) %>%
+  left_join(hex_temps, by = c("cell" = "hex_cell", "Year" = "year")) %>%
   mutate(dataset = "iNat - CC!") %>%
   group_by(dataset) %>%
   nest()
 
 inat_bfly_mod <- inat_bfly_sf %>%
-  left_join(hex_temps, by = c("cell", "year")) %>%
+  left_join(hex_temps, by = c("cell" = "hex_cell", "year")) %>%
   mutate(dataset = "iNat - Bfly") %>%
   group_by(dataset) %>%
   nest()
 
 cc_bfly_mod <- cc_bfly_sf %>%
-  left_join(hex_temps, by = c("cell", "Year" = "year")) %>%
+  left_join(hex_temps, by = c("cell" = "hex_cell", "Year" = "year")) %>%
   mutate(dataset = "CC! - Bfly") %>%
   group_by(dataset) %>%
   nest()
@@ -765,3 +783,60 @@ mod_summary <- mod_all %>%
   select(-pct_r2) %>%
   distinct()
 write.csv(mod_summary, "data/derived_data/lag_mods.csv", row.names = F)
+
+#### Figure 5: Temperature deviance relationships ####
+
+temp_dev <- hex_temps %>%
+  group_by(hex_cell) %>%
+  mutate(hex_mean = mean(mean_temp, na.rm = T),
+         temp_dev = hex_mean - mean_temp)
+
+pheno_dev_temp <- quant_dev %>%
+  left_join(temp_dev, by = c("cell" = "hex_cell", "Year" = "year"))
+
+inat_dev_temp <- inat_cats_dev %>%
+  left_join(temp_dev, by = c("HEXcell" = "hex_cell", "year"))
+
+adult_bfly_dev_temp <- adult_bfly_dev %>%
+  left_join(temp_dev, by = c("HEXcell" = "hex_cell", "year"))
+
+cc_temp <- ggplot(pheno_dev_temp, aes(x = temp_dev, y = dev10_cc)) + geom_point() + geom_smooth(method = "lm", se = F) +
+  geom_hline(yintercept = 0, lty = 2) +
+  labs(x = "Spring temperature deviance (°C)", y = "Caterpillars Count!", title = "Deviance in 10% date")
+
+inat_temp <- ggplot(inat_dev_temp, aes(x = temp_dev, y = dev10)) + geom_point() + geom_smooth(method = "lm", se = F) +
+  geom_hline(yintercept = 0, lty = 2) +
+  labs(x = "Spring temperature deviance (°C)", y = "iNaturalist caterpillars")
+
+adult_temp <- ggplot(adult_bfly_dev_temp, aes(x = temp_dev, y = dev10, col = code)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() + geom_smooth(method = "lm", se = F) + 
+  labs(x = "Spring temperature deviance (°C)", y = "Adult butterflies", col = "Adult overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  theme(legend.position = c(0.25, 0.85), legend.background = element_rect(fill = "transparent"))
+
+plot_grid(cc_temp, inat_temp, adult_temp, nrow = 2, labels = c("A", "B", "C"))
+ggsave("figures/fig6_temp_deviance.pdf", height = 8, width = 10)
+
+## Temp deviance relationships, 50% date
+cc_temp <- ggplot(pheno_dev_temp, aes(x = temp_dev, y = dev50_cc)) + geom_point() + geom_smooth(method = "lm", se = F) +
+  geom_hline(yintercept = 0, lty = 2) +
+  labs(x = "Spring temperature deviance (°C)", y = "Caterpillars Count!", title = "Deviance in 50% date")
+
+inat_temp <- ggplot(inat_dev_temp, aes(x = temp_dev, y = dev50)) + geom_point() + geom_smooth(method = "lm", se = F) +
+  geom_hline(yintercept = 0, lty = 2) +
+  labs(x = "Spring temperature deviance (°C)", y = "iNaturalist caterpillars")
+
+adult_temp <- ggplot(adult_bfly_dev_temp, aes(x = temp_dev, y = dev50, col = code)) + 
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() + geom_smooth(method = "lm", se = F) + 
+  labs(x = "Spring temperature deviance (°C)", y = "Adult butterflies", col = "Adult overwinter") +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae")) +
+  theme(legend.position = c(0.25, 0.85), legend.background = element_rect(fill = "transparent"))
+
+plot_grid(cc_temp, inat_temp, adult_temp, nrow = 2, labels = c("A", "B", "C"))
+ggsave("figures/temp_deviance_50.pdf", height = 8, width = 10)
+
+## Temp deviance model results table
+
+
