@@ -10,7 +10,7 @@ inat_spp <- read_csv("data/derived_data/total_caterpillar_obs_byHEX.csv") %>%
   filter(!(is.na(taxon_family_name)))
 
 ## Adult lep species
-naba_opp <- read_csv("data/NABA.composition.oppdata.csv") %>%
+naba_opp <- read_csv("data/derived_data/NABA.taxonomy.csv") %>%
   filter(ObsYear == 2018) %>%
   group_by(Family) %>%
   summarize(nObs = sum(nobs)) %>%
@@ -29,13 +29,20 @@ cc_spp <- read_csv("data/derived_data/total_caterpillar_obs_byHEX.csv") %>%
 
 ## iNat & adult leps
 sum(inat_spp$taxon_family_name %in% naba_opp$Family)/length(unique(c(naba_opp$Family, inat_spp$taxon_family_name)))
-#0.102
+#0.1
+# 5 overlap
 
 ## iNat & cc
 sum(inat_spp$taxon_family_name %in% cc_spp$taxon_family_name)/length(unique(c(cc_spp$taxon_family_name, inat_spp$taxon_family_name)))
 # 0.204
+# 10 overlap
 
 ## CC & adult lep
 sum(cc_spp$taxon_family_name %in% naba_opp$Family)/length(unique(c(naba_opp$Family, cc_spp$taxon_family_name)))
-# 0.071
+# 0.067
 # 1 overlap - Papilionidae
+
+# Total families
+length(unique(c(naba_opp$Family, cc_spp$taxon_family_name, inat_spp$taxon_family_name)))
+# 50
+
