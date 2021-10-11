@@ -1,12 +1,12 @@
 "data","r_est","conf_lo","conf_hi","p_val"
-"quant_dev$dev10_cc and quant_dev$dev10",0.616504064670833,0.369679370438354,0.782055216657024,3.76589264848901e-05
-"quant_dev$dev50_cc and quant_dev$dev50",0.571548135748455,0.308172306653314,0.753547493402794,0.000178136776116218
-"quant_dev$dev10_cc[quant_dev$code == ""RE""] and quant_dev$dev10_adult[quant_dev$code == ""RE""]",0.314084138389794,-0.442296169240561,0.809377679688755,0.410445851326313
-"quant_dev$dev50_cc[quant_dev$code == ""RE""] and quant_dev$dev50_adult[quant_dev$code == ""RE""]",-0.0924048401844606,-0.712784354853134,0.609095901760305,0.813088733903615
-"quant_dev$dev10_cc[quant_dev$code == ""RL""] and quant_dev$dev10_adult[quant_dev$code == ""RL""]",0.149369525988244,-0.437633166576021,0.647098365077708,0.626228847040226
-"quant_dev$dev50_cc[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",-0.0570145657165629,-0.589481776575247,0.509991711686829,0.853225769213252
-"quant_dev$dev10_cc[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",-0.0225084073972817,-0.512495548908796,0.478536208119526,0.934058290405207
-"quant_dev$dev50_cc[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",-0.140706027261675,-0.594916675883444,0.381616572977962,0.603225833365345
+"quant_dev$dev10_cc and quant_dev$dev10",0.639871703141434,0.402527999504894,0.796604552265116,1.5215023588174e-05
+"quant_dev$dev50_cc and quant_dev$dev50",0.50928613008619,0.22647528356507,0.712901739917293,0.00109244370870387
+"quant_dev$dev10_cc[quant_dev$code == ""RE""] and quant_dev$dev10_adult[quant_dev$code == ""RE""]",0.328248935197467,-0.429503310473048,0.814756066523014,0.388465774162738
+"quant_dev$dev50_cc[quant_dev$code == ""RE""] and quant_dev$dev50_adult[quant_dev$code == ""RE""]",-0.129789344571763,-0.73090962414079,0.584734053769515,0.739278880382718
+"quant_dev$dev10_cc[quant_dev$code == ""RL""] and quant_dev$dev10_adult[quant_dev$code == ""RL""]",0.159842796584377,-0.428917732620661,0.653291998417884,0.601931157998371
+"quant_dev$dev50_cc[quant_dev$code == ""RL""] and quant_dev$dev50_adult[quant_dev$code == ""RL""]",-0.118220252182227,-0.628280835082286,0.46291845703144,0.700494101219378
+"quant_dev$dev10_cc[quant_dev$code == ""RP""] and quant_dev$dev10_adult[quant_dev$code == ""RP""]",-0.0233120527908656,-0.513088182363646,0.477916031110641,0.931708919288345
+"quant_dev$dev50_cc[quant_dev$code == ""RP""] and quant_dev$dev50_adult[quant_dev$code == ""RP""]",-0.195344195233729,-0.630040694483589,0.332564395484901,0.468437353877734
 "inat_bfly_dev$dev10_inat[inat_bfly_dev$code == ""RE""] and inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == ""RE""]",0.0175659763978112,-0.134656833187194,0.168978797760328,0.821734365725622
 "inat_bfly_dev$dev50_inat[inat_bfly_dev$code == ""RE""] and inat_bfly_dev$dev50_bfly[inat_bfly_dev$code == ""RE""]",0.198282952472362,0.0478605323349105,0.339911155369356,0.0102083451793402
 "inat_bfly_dev$dev10_inat[inat_bfly_dev$code == ""RL""] and inat_bfly_dev$dev10_bfly[inat_bfly_dev$code == ""RL""]",0.255690861888344,0.145556029928435,0.359566104230826,9.01575693196175e-06
