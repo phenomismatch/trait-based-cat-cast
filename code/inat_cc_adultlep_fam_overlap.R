@@ -10,11 +10,11 @@ inat_spp <- read_csv("data/derived_data/total_caterpillar_obs_byHEX.csv") %>%
   filter(!(is.na(taxon_family_name)))
 
 ## Adult lep species
-naba_opp <- read_csv("data/derived_data/NABA.taxonomy.csv") %>%
-  filter(ObsYear == 2018) %>%
-  group_by(Family) %>%
-  summarize(nObs = sum(nobs)) %>%
-  filter(!is.na(Family))
+naba_opp <- read_csv("data/derived_data/inat_adultFamilies.csv") %>%
+  filter(year == 2018) %>%
+  group_by(family) %>%
+  summarize(nObs = sum(observations)) %>%
+  filter(!is.na(family))
 
 ## Caterpillars Count! species
 cc_spp <- read_csv("data/derived_data/total_caterpillar_obs_byHEX.csv") %>%
@@ -28,7 +28,7 @@ cc_spp <- read_csv("data/derived_data/total_caterpillar_obs_byHEX.csv") %>%
 ## Jaccard indices of species lists
 
 ## iNat & adult leps
-sum(inat_spp$taxon_family_name %in% naba_opp$Family)/length(unique(c(naba_opp$Family, inat_spp$taxon_family_name)))
+sum(inat_spp$taxon_family_name %in% naba_opp$family)/length(unique(c(naba_opp$family, inat_spp$taxon_family_name)))
 #0.1
 # 5 overlap
 
@@ -38,11 +38,16 @@ sum(inat_spp$taxon_family_name %in% cc_spp$taxon_family_name)/length(unique(c(cc
 # 10 overlap
 
 ## CC & adult lep
-sum(cc_spp$taxon_family_name %in% naba_opp$Family)/length(unique(c(naba_opp$Family, cc_spp$taxon_family_name)))
+sum(cc_spp$taxon_family_name %in% naba_opp$family)/length(unique(c(naba_opp$family, cc_spp$taxon_family_name)))
 # 0.067
 # 1 overlap - Papilionidae
 
 # Total families
-length(unique(c(naba_opp$Family, cc_spp$taxon_family_name, inat_spp$taxon_family_name)))
+length(unique(c(naba_opp$family, cc_spp$taxon_family_name, inat_spp$taxon_family_name)))
 # 50
 
+## Summary table of families x dataset
+fam_table <- data.frame(family = unique(c(naba_opp$family, cc_spp$taxon_family_name, inat_spp$taxon_family_name))) %>%
+  mutate(cc = ifelse(family %in% cc_spp$taxon_family_name, "X", " "),
+         inat_cat = ifelse(family %in% inat_spp$taxon_family_name, "X", " "),
+         inat_adult = ifelse(family %in% naba_opp$family, "X", " "))

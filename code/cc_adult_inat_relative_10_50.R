@@ -282,10 +282,48 @@ pup_sf <- hex_sf %>%
 pup_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(pup_sf) + 
   tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
-  tm_layout(main.title = "E) Adult Butterflies (overwinter as pupae)", scale = 1.5)
+  tm_layout(main.title = "E) Adult Butterflies (overwinter as pupae)", scale = 1.5,
+            inner.margins = c(0.12, 0.02, 0.02, 0.02), 
+            outer.margins = c(0.01,0.01,0.01,0.01))
 
-data_map <- tmap_arrange(cc18_map, inat18_map, bfly18_map, egg_map, pup_map, ncol = 2)
-tmap_save(data_map, "figures/fig2_10pct_dates_map.pdf", units = "in", height = 10, width = 10)
+inat18_df <- inat18_sf %>%
+  st_set_geometry(NULL)
+cc18_df <- cc18_sf %>%
+  st_set_geometry(NULL) 
+bfly18_df <- bfly18_sf %>%
+  st_set_geometry(NULL) 
+egg_df <- egg_sf %>%
+  st_set_geometry(NULL)
+pup_df <- pup_sf %>%
+  st_set_geometry(NULL)
+
+lat_regression <- ggplot() + 
+  geom_point(data = inat18_df, aes(x = latitude, y = w10, col = "iNaturalist caterpillars")) + 
+  geom_smooth(data = inat18_df,aes(x = latitude, y = w10, col = "iNaturalist caterpillars", fill = "iNaturalist caterpillars"), method = "lm", show.legend = F) +
+  geom_point(data = cc18_df, aes(x = latitude, y = mean10, col = 'Caterpillars Count!')) +
+  geom_smooth(data = cc18_df, aes(x = latitude, y = mean10, col = 'Caterpillars Count!', fill = "Caterpillars Count!"), method = "lm", show.legend = F) +
+  geom_point(data = bfly18_df, aes(x = latitude, y = w10, col = 'Adults overwinter as larvae')) +
+  geom_smooth(data = bfly18_df, aes(x = latitude, y = w10, col = 'Adults overwinter as larvae', fill = 'Adults overwinter as larvae'), method = "lm", show.legend = F) +
+  geom_point(data = egg_df, aes(x = latitude, y = w10, col = 'Adults overwinter as eggs')) +
+  geom_smooth(data = egg_df, aes(x = latitude, y = w10, col = 'Adults overwinter as eggs', fill = 'Adults overwinter as eggs'), method = "lm", show.legend = F) +
+  geom_point(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae')) +
+  geom_smooth(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae', fill = 'Adults overwinter as pupae'), method = "lm", show.legend = F)+
+  labs(x = "Latitude (centerpoint of hex cell)", y = "10% date (DOY)", col = "", title = "F)") +
+  ylim(30, 210) +
+  theme_classic(base_size = 20) +
+  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent")) +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4")) +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4"))
+
+pdf(paste0(getwd(), "/figures/fig2_10pct_dates_map.pdf"), height = 15, width = 12)
+pushViewport(viewport(layout = grid.layout(nrow = 3, ncol = 2)))
+print(cc18_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(inat18_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(bfly18_map, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
+print(egg_map, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
+print(pup_map, vp = viewport(layout.pos.row = 3, layout.pos.col = 1))
+print(lat_regression, vp = viewport(layout.pos.row = 3, layout.pos.col = 2))
+dev.off()
 
 # 50% date maps, 2018
 
@@ -314,8 +352,45 @@ pup_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(pup_sf) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "E) Adult Butterflies (overwinter as pupae)", scale = 1.5)
 
-data_map <- tmap_arrange(cc18_map, inat18_map, bfly18_map, egg_map, pup_map, ncol = 2)
-tmap_save(data_map, "figures/pct50_dates_map.pdf", units = "in", height = 10, width = 10)
+
+inat18_df <- inat18_sf %>%
+  st_set_geometry(NULL)
+cc18_df <- cc18_sf %>%
+  st_set_geometry(NULL) 
+bfly18_df <- bfly18_sf %>%
+  st_set_geometry(NULL) 
+egg_df <- egg_sf %>%
+  st_set_geometry(NULL)
+pup_df <- pup_sf %>%
+  st_set_geometry(NULL)
+
+lat_regression <- ggplot() + 
+  geom_point(data = inat18_df, aes(x = latitude, y = w50, col = "iNaturalist caterpillars")) + 
+  geom_smooth(data = inat18_df,aes(x = latitude, y = w50, col = "iNaturalist caterpillars", fill = "iNaturalist caterpillars"), method = "lm", show.legend = F) +
+  geom_point(data = cc18_df, aes(x = latitude, y = mean50, col = 'Caterpillars Count!')) +
+  geom_smooth(data = cc18_df, aes(x = latitude, y = mean50, col = 'Caterpillars Count!', fill = "Caterpillars Count!"), method = "lm", show.legend = F) +
+  geom_point(data = bfly18_df, aes(x = latitude, y = w50, col = 'Adults overwinter as larvae')) +
+  geom_smooth(data = bfly18_df, aes(x = latitude, y = w50, col = 'Adults overwinter as larvae', fill = 'Adults overwinter as larvae'), method = "lm", show.legend = F) +
+  geom_point(data = egg_df, aes(x = latitude, y = w50, col = 'Adults overwinter as eggs')) +
+  geom_smooth(data = egg_df, aes(x = latitude, y = w50, col = 'Adults overwinter as eggs', fill = 'Adults overwinter as eggs'), method = "lm", show.legend = F) +
+  geom_point(data = pup_df, aes(x = latitude, y = w50, col = 'Adults overwinter as pupae')) +
+  geom_smooth(data = pup_df, aes(x = latitude, y = w50, col = 'Adults overwinter as pupae', fill = 'Adults overwinter as pupae'), method = "lm", show.legend = F)+
+  labs(x = "Latitude (centerpoint of hex cell)", y = "50% date (DOY)", col = "", title = "F)") +
+  ylim(130, 210) +
+  theme_classic(base_size = 20) +
+  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent")) +
+  scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4")) +
+  scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4"))
+
+pdf(paste0(getwd(), "/figures/pct50_dates_map.pdf"), height = 15, width = 12)
+pushViewport(viewport(layout = grid.layout(nrow = 3, ncol = 2)))
+print(cc18_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(inat18_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(bfly18_map, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
+print(egg_map, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
+print(pup_map, vp = viewport(layout.pos.row = 3, layout.pos.col = 1))
+print(lat_regression, vp = viewport(layout.pos.row = 3, layout.pos.col = 2))
+dev.off()
 
 #### Figure 3 #####
 ## Plot correlations of 10, 50% deviances
@@ -363,12 +438,13 @@ cc_adult10 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev10_adult, x = d
   geom_abline(slope = 1, intercept = 0, lty = 2) +
   theme_set(theme_classic(base_size = 16)) +
   geom_smooth(method = "lm", se = F) +
+  ylim(-40, 40) +
   labs(y = expression(paste(Delta, " Adult butterflies")), x = expression(paste(Delta, " Caterpillars Count!")), col = "Adults overwinter as") +
   scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), 
                      labels = c("RE" = "eggs, r = 0.70", "RL" = "larvae, r = 0.21", "RP" = "pupae, r = 61**")) +
   theme(legend.position = c(0.25, 0.8), legend.background = element_rect(fill = "transparent")) +
-  annotate(geom= "text", x = -8, y =-28, label = "early", size = 5) +
-  annotate(geom= "text", x = 8, y = -28, label = "late", size = 5)
+  annotate(geom= "text", x = -8, y =-38, label = "early", size = 5) +
+  annotate(geom= "text", x = 8, y = -38, label = "late", size = 5)
 
 plot_grid(inat_cc10, inat_adult10, cc_adult10, ncol = 2, labels = c("A", "B", "C"), label_size = 15)
 ggsave("figures/fig3_relative_adult_inat_cc_10.pdf", units = "in", height = 8, width = 10)
