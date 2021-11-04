@@ -840,21 +840,26 @@ hex_temps <- cpc %>%
             mean_tmax = mean(t.max, na.rm = T),
             mean_temp = mean(mean_tmin, mean_tmax, na.rm = T))
 
+temp_dev <- hex_temps %>%
+  group_by(hex_cell) %>%
+  mutate(hex_mean = mean(mean_temp, na.rm = T),
+         temp_dev = hex_mean - mean_temp)
+
 inat_cc_mod <- inat_cc_sf %>%
-  left_join(hex_temps, by = c("cell" = "hex_cell", "Year" = "year")) %>%
+  left_join(temp_dev, by = c("cell" = "hex_cell", "Year" = "year")) %>%
   mutate(dataset = "iNat - CC!") %>%
   group_by(dataset) %>%
   nest()
 
 inat_bfly_mod <- inat_bfly_sf %>%
-  left_join(hex_temps, by = c("cell" = "hex_cell", "year")) %>%
+  left_join(temp_dev, by = c("cell" = "hex_cell", "year")) %>%
   mutate(dataset = "iNat - Bfly") %>%
   group_by(dataset, code) %>%
   filter(!is.na(code)) %>%
   nest()
 
 cc_bfly_mod <- cc_bfly_sf %>%
-  left_join(hex_temps, by = c("cell" = "hex_cell", "Year" = "year")) %>%
+  left_join(temp_dev, by = c("cell" = "hex_cell", "Year" = "year")) %>%
   mutate(dataset = "CC! - Bfly") %>%
   group_by(dataset, code) %>%
   filter(!is.na(code)) %>%
@@ -862,8 +867,8 @@ cc_bfly_mod <- cc_bfly_sf %>%
 
 mod_all <- inat_cc_mod %>%
   rbind(inat_bfly_mod, cc_bfly_mod) %>%
-  mutate(mod10 = map(data, ~lm(abs(diff_10_days) ~ latitude + mean_temp, data = .)),
-         mod50 = map(data, ~lm(abs(diff_50_days) ~ latitude + mean_temp, data = .)),
+  mutate(mod10 = map(data, ~lm(abs(diff_10_days) ~ latitude + temp_dev, data = .)),
+         mod50 = map(data, ~lm(abs(diff_50_days) ~ latitude + temp_dev, data = .)),
          tidy10 = map(mod10, ~broom::tidy(.)),
          tidy50 = map(mod50, ~broom::tidy(.)))
 
@@ -873,13 +878,13 @@ mod_ests_10 <- mod_all %>%
   mutate_at(c("code"), ~ifelse(is.na(.), "None", .)) %>%
   filter(term != "(Intercept)")
 
-temp10 <- ggplot(filter(mod_ests_10, term == "mean_temp"), aes(x = term, y = estimate, col = dataset, shape = code)) + 
+temp10 <- ggplot(filter(mod_ests_10, term == "temp_dev"), aes(x = term, y = estimate, col = dataset, shape = code)) + 
   geom_point(cex = 4, position = position_dodge(width = 0.6)) + 
   geom_errorbar(aes(ymin = estimate - 1.96*std.error, ymax = estimate + 1.96*std.error), 
                                                           width = 0.3, cex = 1, position = position_dodge(width = 0.6)) + 
   geom_hline(yintercept = 0, lty = 2) +
   labs(x = "", y = "Estimate", col = "Lag in 10% date", shape = "Adults overwinter as") +
-  scale_x_discrete(labels = c("mean_temp" = "Spring temp", "latitude" = "Latitude")) +
+  scale_x_discrete(labels = c("temp_dev" = "Deviance in\nspring temp", "latitude" = "Latitude")) +
   scale_color_manual(values = c("#3E4A89FF", 
                                 "#1F9E89FF",
                                 "#6DCD59FF"),
@@ -902,7 +907,8 @@ lat10 <- ggplot(filter(mod_ests_10, term == "latitude"), aes(x = term, y = estim
                      labels = c("CC! - Bfly" = "Caterpillars Count! - Adult butterflies",
                                 "iNat - Bfly" = "iNaturalist caterpillars - adult butterflies",
                                 "iNat - CC!" = "iNaturalist caterpillars - Caterpillars Count!")) +
-  scale_shape_manual(values = c(15, 16, 17, 18)) +
+  scale_shape_manual(values = c(15, 16, 17, 18), labels = c("None" = "none", "RL" = "larvae",
+                                                            "RE" = "eggs", "RP" = "pupae")) +
   coord_flip()
 
 ests_legend <- get_legend(lat10)
