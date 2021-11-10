@@ -6,6 +6,7 @@ library(lubridate)
 library(sf)
 library(tmap)
 library(cowplot)
+library(grid)
 
 ## ggplot theme
 
@@ -309,9 +310,10 @@ lat_regression <- ggplot() +
   geom_point(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae')) +
   geom_smooth(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae', fill = 'Adults overwinter as pupae'), method = "lm", show.legend = F)+
   labs(x = "Latitude (centerpoint of hex cell)", y = "10% date (DOY)", col = "", title = "F)") +
-  ylim(30, 210) +
+  ylim(30, 220) +
   theme_classic(base_size = 20) +
-  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent")) +
+  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent"),
+        title = element_text(size = 16)) +
   scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4")) +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4"))
 
@@ -876,6 +878,7 @@ mod_ests_10 <- mod_all %>%
   select(dataset, code, tidy10) %>%
   unnest(cols = c("tidy10")) %>%
   mutate_at(c("code"), ~ifelse(is.na(.), "None", .)) %>%
+  filter(!(dataset == "CC! - Bfly" & code == "RE")) %>%
   filter(term != "(Intercept)")
 
 temp10 <- ggplot(filter(mod_ests_10, term == "temp_dev"), aes(x = term, y = estimate, col = dataset, shape = code)) + 
