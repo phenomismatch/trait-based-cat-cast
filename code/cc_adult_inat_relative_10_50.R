@@ -910,14 +910,14 @@ lat10 <- ggplot(filter(mod_ests_10, term == "latitude"), aes(x = term, y = estim
                      labels = c("CC! - Bfly" = "Caterpillars Count! - Adult butterflies",
                                 "iNat - Bfly" = "iNaturalist caterpillars - adult butterflies",
                                 "iNat - CC!" = "iNaturalist caterpillars - Caterpillars Count!")) +
-  scale_shape_manual(values = c(15, 16, 17, 18), labels = c("None" = "none", "RL" = "larvae",
+  scale_shape_manual(values = c(15, 16, 17, 18), labels = c("None" = "(unspecified)", "RL" = "larvae",
                                                             "RE" = "eggs", "RP" = "pupae")) +
   coord_flip()
 
 ests_legend <- get_legend(lat10)
 
-ests_multi <- plot_grid(temp10 + theme(legend.position = "none"), 
-                        lat10 + theme(legend.position = "none"), nrow = 2)
+ests_multi <- plot_grid(lat10 + theme(legend.position = "none"), 
+                        temp10 + theme(legend.position = "none"), nrow = 2)
 plot_grid(ests_multi, ests_legend, ncol = 2, rel_widths = c(0.5, 0.5))
 
 ggsave("figures/fig5_lag10_mod_ests.pdf", units = "in", height = 5, width = 10)
