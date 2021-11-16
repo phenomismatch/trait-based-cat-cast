@@ -915,7 +915,7 @@ lat10 <- ggplot(filter(mod_ests_10, term == "latitude"), aes(x = term, y = estim
                                 "#1F9E89FF",
                                 "#6DCD59FF"),
                      labels = c("CC! - Bfly" = "Caterpillars Count! - Adult butterflies",
-                                "iNat - Bfly" = "iNaturalist caterpillars - adult butterflies",
+                                "iNat - Bfly" = "iNaturalist caterpillars - Adult butterflies",
                                 "iNat - CC!" = "iNaturalist caterpillars - Caterpillars Count!")) +
   scale_shape_manual(values = c(15, 16, 17, 18), labels = c("None" = "(unspecified)", "RL" = "larvae",
                                                             "RE" = "eggs", "RP" = "pupae")) +
