@@ -744,14 +744,21 @@ ggsave("figures/lag50_days_gdd.pdf", units = "in", height = 8, width = 10)
 
 inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_10_days)) +
   annotate(geom = "text", x = -10, y = 0.017, label = "Lag in 10% date", size = 7) +
-  geom_density(fill = "gray96") + labs(x = "iNaturalist caterpillars - Caterpillars Count!",  y = "Density")
+  geom_density(fill = "gray96") + 
+  theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
+  labs(x = expression("   iNaturalist\ncaterpillars later" %<-% "      " %->% "Caterpillars\nCount! later"),  y = "Density")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "iNaturalist caterpillars - Adult butterflies", fill = "Adults overwinter as", y = "") +
+  geom_density(alpha = 0.5) + 
+  theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
+  labs(x = expression("   iNaturalist\ncaterpillars later" %<-% "          " %->% "Adults\n later"), 
+       fill = "Adults overwinter as", y = "") +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "eggs", "RL" = "larvae", "RP" = "pupae"))
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, fill = code)) +
-  geom_density(alpha = 0.5) + labs(x = "Caterpillars Count! - Adult butterflies", y = "Density") +
+  geom_density(alpha = 0.5) + 
+  theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
+  labs(x = expression("Caterpillars\nCount! later" %<-% "         " %->% "Adults\n later"), y = "Density") +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
 legend <- get_legend(inat_adult_plot)
@@ -845,7 +852,7 @@ hex_temps <- cpc %>%
 temp_dev <- hex_temps %>%
   group_by(hex_cell) %>%
   mutate(hex_mean = mean(mean_temp, na.rm = T),
-         temp_dev = hex_mean - mean_temp)
+         temp_dev = mean_temp - hex_mean)
 
 inat_cc_mod <- inat_cc_sf %>%
   left_join(temp_dev, by = c("cell" = "hex_cell", "Year" = "year")) %>%
