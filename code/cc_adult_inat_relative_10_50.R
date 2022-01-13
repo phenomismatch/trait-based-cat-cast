@@ -233,7 +233,7 @@ cc18_sf <- hex_sf %>%
   right_join(cc_2018)
 
 cc18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(cc18_sf) + 
-  tm_polygons(col = "mean10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50)) +
+  tm_polygons(col = "mean10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(80, 210, by = 26)) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "A) Caterpillars Count!", scale = 1.5)
 
@@ -245,7 +245,7 @@ inat18_sf <- hex_sf %>%
   right_join(inat_2018, by = c("cell" = "HEXcell"))
 
 inat18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(inat18_sf) + 
-  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50), legend.show = F) +
+  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(80, 210.5, by = 26), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "B) iNaturalist Caterpillars", scale = 1.5)
 
@@ -257,7 +257,7 @@ bfly18_sf <- hex_sf %>%
   right_join(bfly_2018, by = c("cell" = "HEXcell"))
 
 bfly18_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(bfly18_sf) + 
-  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50), legend.show = F) +
+  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(80, 210, by = 26), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "C) Adult Butterflies (overwinter as larvae)", scale = 1.5)
 
@@ -269,7 +269,7 @@ egg_sf <- hex_sf %>%
   right_join(egg_2018, by = c("cell" = "HEXcell"))
 
 egg_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(egg_sf) + 
-  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50), legend.show = F) +
+  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(80, 210, by = 26), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "D) Adult Butterflies (overwinter as eggs)", scale = 1.5)
 
@@ -281,7 +281,7 @@ pup_sf <- hex_sf %>%
   right_join(pup_2018, by = c("cell" = "HEXcell"))
 
 pup_map <- tm_shape(nam_sf) + tm_polygons(col = "gray95") + tm_shape(pup_sf) + 
-  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(50, 250, by = 50), legend.show = F) +
+  tm_polygons(col = "w10", alpha = 0.75, title = "10% date (DOY)", palette = "YlGn", breaks = seq(80, 210, by = 26), legend.show = F) +
   tm_shape(cc18_sf) + tm_borders(lwd = 2) +
   tm_layout(main.title = "E) Adult Butterflies (overwinter as pupae)", scale = 1.5,
             inner.margins = c(0.12, 0.02, 0.02, 0.02), 
@@ -310,9 +310,12 @@ lat_regression <- ggplot() +
   geom_point(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae')) +
   geom_smooth(data = pup_df, aes(x = latitude, y = w10, col = 'Adults overwinter as pupae', fill = 'Adults overwinter as pupae'), method = "lm", show.legend = F)+
   labs(x = "Latitude (centerpoint of hex cell)", y = "10% date (DOY)", col = "", title = "F)") +
-  ylim(30, 220) +
+  ylim(20, 220) +
+  xlim(35, 50) +
   theme_classic(base_size = 20) +
-  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent"),
+  theme(legend.position = c(0.6, 0.25), 
+        legend.title = element_blank(),
+        legend.background = element_rect(linetype = 1, color = 1, fill = "transparent"),
         title = element_text(size = 16)) +
   scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4")) +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4"))
@@ -380,7 +383,8 @@ lat_regression <- ggplot() +
   labs(x = "Latitude (centerpoint of hex cell)", y = "50% date (DOY)", col = "", title = "F)") +
   ylim(130, 210) +
   theme_classic(base_size = 20) +
-  theme(legend.position = c(0.7, 0.25), legend.background = element_rect(fill = "transparent")) +
+  theme(legend.position = c(0.7, 0.25), legend.title = element_blank(),
+        legend.background = element_rect(linetype = 1, color = 1, fill = "transparent")) +
   scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4")) +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF", "#D7BDE2","dodgerblue4"))
 
@@ -419,8 +423,7 @@ inat_bfly_dev <- select(adult_bfly_dev, year, HEXcell, code, dev10, dev50) %>%
 inat_cc10 <- ggplot(quant_dev, aes(x = dev10_cc, y = dev10)) + geom_point() +
   geom_abline(slope = 1, intercept = 0, lty = 2) +
   geom_smooth(method = "lm", se = F) +
-  annotate(geom = "text", x = -3, y = 50, label = "Deviance in 10% date", size = 7) +
-  annotate(geom = "text", x = 6, y = -55, label = "r = 0.56***", size = 5) +
+  annotate(geom = "text", x = -7, y = 50, label = "r = 0.56***", size = 5) +
   labs(x = expression(paste(Delta, " Caterpillars Count!")),
        y = expression(paste(Delta, " iNaturalist caterpillars"))) +
   theme_set(theme_classic(base_size  = 16))
@@ -443,7 +446,7 @@ cc_adult10 <- ggplot(filter(quant_dev, !is.na(code)), aes(y = dev10_adult, x = d
   ylim(-40, 40) +
   labs(y = expression(paste(Delta, " Adult butterflies")), x = expression(paste(Delta, " Caterpillars Count!")), col = "Adults overwinter as") +
   scale_color_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), 
-                     labels = c("RE" = "eggs, r = 0.70", "RL" = "larvae, r = 0.21", "RP" = "pupae, r = 61**")) +
+                     labels = c("RE" = "eggs, r = 0.70", "RL" = "larvae, r = 0.21", "RP" = "pupae, r = 0.61**")) +
   theme(legend.position = c(0.25, 0.8), legend.background = element_rect(fill = "transparent")) +
   annotate(geom= "text", x = -8, y =-38, label = "early", size = 5) +
   annotate(geom= "text", x = 8, y = -38, label = "late", size = 5)
@@ -743,22 +746,21 @@ ggsave("figures/lag50_days_gdd.pdf", units = "in", height = 8, width = 10)
 ## Density plots for lags in days - 10%
 
 inat_cc_plot <- ggplot(inat_cc_diff, aes(x = diff_10_days)) +
-  annotate(geom = "text", x = -10, y = 0.017, label = "Lag in 10% date", size = 7) +
   geom_density(fill = "gray96") + 
   theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
-  labs(x = expression("   iNaturalist\ncaterpillars later" %<-% "      " %->% "Caterpillars\nCount! later"),  y = "Density")
+  labs(x = expression(" " %<-% "    iNaturalist                Caterpillars\n caterpillars later         Count! later" %->% " "),  y = "Density")
 
 inat_adult_plot <- ggplot(inat_bfly_diff, aes(x = diff_10_days, fill = code)) +
   geom_density(alpha = 0.5) + 
   theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
-  labs(x = expression("   iNaturalist\ncaterpillars later" %<-% "          " %->% "Adults\n later"), 
+  labs(x = expression(" " %<-% "    iNaturalist                Adults\n caterpillars later           later" %->% " "),
        fill = "Adults overwinter as", y = "") +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "eggs", "RL" = "larvae", "RP" = "pupae"))
 
 adult_cc_plot <- ggplot(cc_bfly_diff, aes(x = diff_10_days, fill = code)) +
   geom_density(alpha = 0.5) + 
   theme(axis.title.x = element_text(margin = margin(b=10), vjust= -5)) +
-  labs(x = expression("Caterpillars\nCount! later" %<-% "         " %->% "Adults\n later"), y = "Density") +
+  labs(x = expression(" " %<-% " Caterpillars                Adults\n Count! later                  later" %->% " "), y = "Density") +
   scale_fill_manual(values = c("#482878FF", "#26828EFF", "#B4DE2CFF"), labels = c("RE" = "Eggs", "RL" = "Larvae", "RP" = "Pupae"))
 
 legend <- get_legend(inat_adult_plot)
@@ -991,23 +993,29 @@ write.csv(mod_summary, "data/derived_data/lag_mods.csv", row.names = F)
 
 #### Figure 5: Temperature deviance relationships ####
 
-temp_dev <- hex_temps %>%
-  group_by(hex_cell) %>%
+pheno_dev_temp <- quant_dev %>%
+  left_join(hex_temps, by = c("cell" = "hex_cell", "Year" = "year")) %>%
+  group_by(cell) %>%
   mutate(hex_mean = mean(mean_temp, na.rm = T),
          temp_dev = hex_mean - mean_temp)
 
-pheno_dev_temp <- quant_dev %>%
-  left_join(temp_dev, by = c("cell" = "hex_cell", "Year" = "year"))
-
 inat_dev_temp <- inat_cats_dev %>%
-  left_join(temp_dev, by = c("HEXcell" = "hex_cell", "year"))
+  left_join(hex_temps, by = c("HEXcell" = "hex_cell", "year" = "year")) %>%
+  group_by(HEXcell) %>%
+  mutate(hex_mean = mean(mean_temp, na.rm = T),
+         temp_dev = hex_mean - mean_temp)
 
 adult_bfly_dev_temp <- adult_bfly_dev %>%
-  left_join(temp_dev, by = c("HEXcell" = "hex_cell", "year"))
+  left_join(hex_temps, by = c("HEXcell" = "hex_cell", "year" = "year")) %>%
+  group_by(HEXcell) %>%
+  mutate(hex_mean = mean(mean_temp, na.rm = T),
+         temp_dev = hex_mean - mean_temp)
 
 cc_temp <- ggplot(pheno_dev_temp, aes(x = temp_dev, y = dev10_cc)) + geom_point() + geom_smooth(method = "lm", se = F) +
   geom_hline(yintercept = 0, lty = 2) +
-  labs(x = "Spring temperature deviance (°C)", y = "Caterpillars Count!", title = "Deviance in 10% date")
+  scale_x_continuous(breaks = c(-1,0,1)) +
+  ylim(-15,15)+
+  labs(x = "Spring temperature deviance (°C)", y = "Caterpillars Count!")
 
 inat_temp <- ggplot(inat_dev_temp, aes(x = temp_dev, y = dev10)) + geom_point() + geom_smooth(method = "lm", se = F) +
   geom_hline(yintercept = 0, lty = 2) +
