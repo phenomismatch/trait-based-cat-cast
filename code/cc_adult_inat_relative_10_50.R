@@ -330,6 +330,9 @@ print(pup_map, vp = viewport(layout.pos.row = 3, layout.pos.col = 1))
 print(lat_regression, vp = viewport(layout.pos.row = 3, layout.pos.col = 2))
 dev.off()
 
+summary(lm(w10 ~ latitude, inat18_df))
+summary(lm(mean10 ~ latitude, cc18_df))
+
 # 50% date maps, 2018
 
 cc18_map <- tm_shape(nam_sf) + tm_polygons() + tm_shape(cc18_sf) + 
